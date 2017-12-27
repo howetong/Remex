@@ -1,4 +1,4 @@
-package cn.tonghao.remex.common.core.util;
+package cn.tonghao.remex.common.core.argument;
 
 import cn.tonghao.remex.common.core.annotation.Json;
 import com.fasterxml.jackson.databind.DeserializationFeature;

@@ -18,7 +18,7 @@
     <!-- 以下为SpringMVC配置 -->
     <mvc:annotation-driven>
         <mvc:argument-resolvers>
-            <bean class="cn.tonghao.remex.common.core.util.JsonMapperArgumentResolver"/>
+            <bean class="cn.tonghao.remex.common.core.argument.JsonMapperArgumentResolver"/>
         </mvc:argument-resolvers>
         <!-- 返回json数据，@response使用 -->
         <mvc:message-converters>
