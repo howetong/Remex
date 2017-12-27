@@ -20,6 +20,9 @@ public class TripleDESUtil {
 
     private  static  Cipher cipher;
 
+    private TripleDESUtil() {
+    }
+
     /**
      * 加载类时就初始化加密对象
      */

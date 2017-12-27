@@ -34,6 +34,9 @@ public class RSAUtil {
 
     private static String PRIVATE_KEY = "privateKey";
 
+    private RSAUtil() {
+    }
+
     /**
      * 加载类时就初始化加密对象
      */

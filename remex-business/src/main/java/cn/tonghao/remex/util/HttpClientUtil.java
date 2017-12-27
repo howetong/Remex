@@ -47,6 +47,9 @@ public class HttpClientUtil {
                 .setConnectionRequestTimeout(10000).setSocketTimeout(20000).build();
     }
 
+    private HttpClientUtil() {
+    }
+
     public static String sendData(String url, String str) {
         SSLConnectionSocketFactory sslFactory = SSLConnectionSocketFactory.getSocketFactory();
 

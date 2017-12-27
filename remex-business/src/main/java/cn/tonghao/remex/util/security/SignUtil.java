@@ -1,6 +1,3 @@
-/**
- *
- */
 package cn.tonghao.remex.util.security;
 
 import java.io.FileInputStream;
@@ -12,14 +9,15 @@ import java.security.cert.CertificateFactory;
 
 public class SignUtil {
 
-    static final String HEXES = "0123456789ABCDEF";
+    private SignUtil(){
+    }
 
     /**
      * @param data     被签名的原数据字节数组，xml去掉signData节点。
      * @param signData 签名字节数组。
      * @param certFile X.509标准的证书文件。
      * @return 如果验签通过，就返回true
-     * @throws RuntimeException
+     * @throws RuntimeException 运行时异常
      */
     public static boolean veriSign(byte[] data, byte[] signData, String certFile)
             throws RuntimeException {
