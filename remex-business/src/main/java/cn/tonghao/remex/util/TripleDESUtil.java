@@ -1,4 +1,4 @@
-package cn.tonghao.remex.common.utils;
+package cn.tonghao.remex.util;
 
 
 import org.apache.commons.codec.binary.Base64;

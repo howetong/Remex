@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.tonghao</groupId>
+    <artifactId>remex-web</artifactId>
+    <version>4.0.0</version>
+
+    <parent>
+        <groupId>org.tonghao</groupId>
+        <artifactId>remex-pom</artifactId>
+        <version>1.0.0</version>
+        <relativePath>../remex-pom/pom.xml</relativePath>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.tonghao</groupId>
+            <artifactId>remex-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>dev</id>
+            <properties>
+                <profile.path>config/resource/dev</profile.path>
+            </properties>
+        </profile>
+        <profile>
+            <id>sit</id>
+            <properties>
+                <profile.path>config/resource/sit</profile.path>
+            </properties>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <id>product</id>
+            <properties>
+                <profile.path>config/resource/prd</profile.path>
+            </properties>
+        </profile>
+    </profiles>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources/${profile.path}</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources/config/resource</directory>
+                <includes>
+                    <include>application.properties</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>**/dev/*</exclude>
+                    <exclude>**/sit/*</exclude>
+                    <exclude>**/prd/*</exclude>
+                </excludes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
