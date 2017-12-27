@@ -18,10 +18,9 @@
     <dependencies>
         <dependency>
             <groupId>org.tonghao</groupId>
-            <artifactId>remex-common</artifactId>
+            <artifactId>remex-business</artifactId>
             <version>1.0.0</version>
         </dependency>
-
     </dependencies>
 
     <profiles>

@@ -14,16 +14,13 @@
 
     <context:annotation-config/>
 
-    <!-- 配置 JSR303 Bean Validator 定义 -->
-    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
-
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="@{web.view.prefix}"/>
-        <property name="suffix" value="@{web.view.suffix}"/>
+        <property name="prefix" value="${web.view.prefix}"/>
+        <property name="suffix" value="${web.view.suffix}"/>
     </bean>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
-        <property name="maxUploadSize" value="@{web.maxUploadSize}"/>
+        <property name="maxUploadSize" value="${web.maxUploadSize}"/>
     </bean>
 	
 

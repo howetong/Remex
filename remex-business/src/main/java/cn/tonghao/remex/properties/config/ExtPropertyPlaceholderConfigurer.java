@@ -1,4 +1,4 @@
-package cn.tonghao.remex.common.properties.config;
+package cn.tonghao.remex.properties.config;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;

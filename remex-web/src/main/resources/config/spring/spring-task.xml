@@ -3,11 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <!--<bean id="jobFactory" class="cn.tonghao.task.JobFactory"/>-->
-    <bean id="jobClass" class="cn.tonghao.task.TaskTest"></bean>
+    <bean id="jobClass" class="cn.tonghao.remex.task.TaskTest"></bean>
 
     <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <!--<property name="jobClass" value="cn.tonghao.task.TaskTest"></property>-->
         <property name="targetObject" ref="jobClass"></property>
         <property name="targetMethod" value="execute"></property>
         <property name="concurrent" value="false"></property>
@@ -16,7 +14,7 @@
     <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
         <property name="jobDetail" ref="jobDetail"></property>
         <property name="startDelay" value="3000"></property>
-        <property name="cronExpression" value="* * 0/10 * * ?"></property>
+        <property name="cronExpression" value="0/10 * * * * ?"></property>
     </bean>
 
     <bean id="startQuartz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
