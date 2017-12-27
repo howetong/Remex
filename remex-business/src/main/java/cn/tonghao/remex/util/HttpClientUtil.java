@@ -127,7 +127,7 @@ public class HttpClientUtil {
             httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
             return executeHttpPost(httpPost,client);
         }catch(NoSuchAlgorithmException | KeyStoreException | KeyManagementException e){
-            logger.info("【工具方法日志】 https请求出现异常,{}",e.getMessage());
+            logger.info("https请求出现异常,{}",e.getMessage());
             return null;
         }
     }
@@ -166,7 +166,7 @@ public class HttpClientUtil {
             }
         } catch (IOException e) {
             //调用异常，timeOut或者协议错误
-            logger.info("【工具方法日志】  http请求异常！,{}",e.getMessage());
+            logger.info("http请求异常！,{}",e.getMessage());
         }
         return null;
     }
@@ -188,14 +188,14 @@ public class HttpClientUtil {
             // 相信自己的CA和所有自签名的证书
             sc = SSLContexts.custom().loadTrustMaterial(trustStore, new TrustSelfSignedStrategy()).build();
         }catch (KeyStoreException | NoSuchAlgorithmException| CertificateException | IOException | KeyManagementException e) {
-            logger.info("【工具方法日志】 生成SSL上下文异常",e.getMessage());
+            logger.info("生成SSL上下文异常",e.getMessage());
             e.printStackTrace();
         } finally {
             try {
                 if (instream != null)
                     instream.close();
             } catch (IOException e) {
-                logger.info("【工具方法日志】 资源关闭异常",e.getMessage());
+                logger.info("资源关闭异常",e.getMessage());
             }
         }
         return sc;
