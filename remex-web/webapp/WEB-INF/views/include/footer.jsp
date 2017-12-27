@@ -5,7 +5,6 @@
 
         <!-- Add your copyright text here -->
         <div class="footer-text">
-            Copyright  &copy; 2017-2020 Tuniu.
             All Rights Reserved.
         </div>
 

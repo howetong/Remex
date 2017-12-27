@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="links-block left-sep">
-                    <img src="http://img3.tuniucdn.com/u/mainpic/logo/logo0127.png"alt=""/>
+                    <img src=""alt=""/>
                 </div>
             </div>
         </div>
