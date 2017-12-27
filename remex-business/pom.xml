@@ -15,4 +15,12 @@
         <relativePath>../remex-pom/pom.xml</relativePath>
     </parent>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.tonghao</groupId>
+            <artifactId>remex-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+
 </project>

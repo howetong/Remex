@@ -5,7 +5,7 @@ import java.util.Date;
 /**
  * Created by howetong on 2017/2/28.
  */
-public class PropertyConfigData {
+public class PropertyConfig {
 
     private Integer id;
 
