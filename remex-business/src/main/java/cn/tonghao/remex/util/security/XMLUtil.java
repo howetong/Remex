@@ -1,6 +1,6 @@
 package cn.tonghao.remex.util.security;
 
-import com.tiefan.pay.npc.log.NPCLogger;
+import cn.tonghao.remex.log.RemexLogger;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.w3c.dom.Document;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class XMLUtil {
-    private static final Logger LOG = NPCLogger.getLogger(XMLUtil.class);
+    private static final Logger LOG = RemexLogger.getLogger(XMLUtil.class);
 
     /**
      * 没有多层节点的xml字符串转map
