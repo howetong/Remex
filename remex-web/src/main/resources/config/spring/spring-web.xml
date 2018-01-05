@@ -26,14 +26,14 @@
             <bean class="cn.tonghao.remex.common.argument.JsonMapperArgumentResolver"/>
         </mvc:argument-resolvers>
         <mvc:return-value-handlers>
-            <bean class="com.tiefan.fbs.fsp.base.core.method.ResponseJsonMethodProcessor">
+            <bean class="cn.tonghao.remex.common.method.ResponseJsonMethodProcessor">
                 <property name="messageConverter">
-                    <bean class="com.tiefan.fbs.fsp.base.core.messageconverter.Base64JsonHttpMessageConverter"/>
+                    <bean class="cn.tonghao.remex.common.util.Base64JsonHttpMessageConverter"/>
                 </property>
                 <property name="beanWrappers">
                     <list>
-                        <bean class="com.tiefan.fbs.fsp.base.core.method.impl.ResponseWrapper"/>
-                        <bean class="com.tiefan.fbs.fsp.base.core.method.impl.DefaultBeanWrapper"/>
+                        <bean class="cn.tonghao.remex.common.method.impl.ResponseWrapper"/>
+                        <bean class="cn.tonghao.remex.common.method.impl.DefaultBeanWrapper"/>
                     </list>
                 </property>
             </bean>
