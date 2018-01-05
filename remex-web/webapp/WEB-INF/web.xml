@@ -31,7 +31,7 @@
     <!--日志过滤器-->
     <filter>
         <filter-name>LogFilter</filter-name>
-        <filter-class>cn.tonghao.remex.log.LogFilter</filter-class>
+        <filter-class>cn.tonghao.remex.business.core.log.LogFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>LogFilter</filter-name>

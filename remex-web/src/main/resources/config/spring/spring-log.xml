@@ -5,7 +5,7 @@
     <bean id="loggingInitialization"
           class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
         <property name="targetClass"
-                  value="cn.tonghao.remex.common.core.util.LogConfigurerSupportMultiEnvironment"/>
+                  value="cn.tonghao.remex.common.util.LogConfigurerSupportMultiEnvironment"/>
         <property name="targetMethod" value="registLogConfiguration"/>
         <property name="arguments">
             <list>

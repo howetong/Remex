@@ -12,13 +12,10 @@
     <!-- 自动扫描controller包下的所有类，如果@Controller注入为bean -->
     <context:component-scan base-package="cn.tonghao.remex.controller" />
 
-    <!-- 配置 JSR303 Bean Validator 定义 -->
-    <!--<bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>-->
-
     <!-- 以下为SpringMVC配置 -->
     <mvc:annotation-driven>
         <mvc:argument-resolvers>
-            <bean class="cn.tonghao.remex.common.core.argument.JsonMapperArgumentResolver"/>
+            <bean class="cn.tonghao.remex.common.argument.JsonMapperArgumentResolver"/>
         </mvc:argument-resolvers>
         <!-- 返回json数据，@response使用 -->
         <mvc:message-converters>

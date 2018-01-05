@@ -2,22 +2,43 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
+    http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
     <context:component-scan base-package="cn.tonghao.remex">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
-    <context:component-scan base-package="cn.tonghao.remex.controller.api"/>
+    <context:component-scan base-package="cn.tonghao.remex.controller.pay.api"/>
 
-
-    <context:annotation-config/>
+    <!-- 配置 JSR303 Bean Validator 定义 -->
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="${web.view.prefix}"/>
         <property name="suffix" value="${web.view.suffix}"/>
     </bean>
+
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="cn.tonghao.remex.common.argument.JsonMapperArgumentResolver"/>
+        </mvc:argument-resolvers>
+        <mvc:return-value-handlers>
+            <bean class="com.tiefan.fbs.fsp.base.core.method.ResponseJsonMethodProcessor">
+                <property name="messageConverter">
+                    <bean class="com.tiefan.fbs.fsp.base.core.messageconverter.Base64JsonHttpMessageConverter"/>
+                </property>
+                <property name="beanWrappers">
+                    <list>
+                        <bean class="com.tiefan.fbs.fsp.base.core.method.impl.ResponseWrapper"/>
+                        <bean class="com.tiefan.fbs.fsp.base.core.method.impl.DefaultBeanWrapper"/>
+                    </list>
+                </property>
+            </bean>
+        </mvc:return-value-handlers>
+    </mvc:annotation-driven>
 
     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
         <property name="maxUploadSize" value="${web.maxUploadSize}"/>
