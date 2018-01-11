@@ -5,7 +5,7 @@
     <!-- broker -->
     <bean id="commonFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL"
-                  value="failover://(@{amq.broker.address})?randomize=false&amp;jms.useAsyncSend=true&amp;jms.prefetchPolicy.queuePrefetch=1">
+                  value="failover://(${amq.broker.address})?randomize=false&amp;jms.useAsyncSend=true&amp;jms.prefetchPolicy.queuePrefetch=1">
         </property>
     </bean>
 

@@ -8,7 +8,9 @@
 
         <property name="locations">
             <list>
-                <value>classpath:config/resource/common.properties</value>
+                <value>classpath:common.properties</value>
+                <value>classpath:application.properties</value>
+                <value>classpath:remex.properties</value>
             </list>
         </property>
     </bean>
@@ -25,8 +27,18 @@
     </bean>-->
 
 
+    <bean id="sqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg index="0" ref="sqlSessionFactory"/>
+    </bean>
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSourceMaster"/>
+        <property name="mapperLocations" value="classpath*:config/mybatis/mapper_*.xml"/>
+    </bean>
+
+
     <!--数据源配置-->
-    <bean id="dataSource_remex" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="dataSourceMaster" class="com.mchange.v2.c3p0.ComboPooledDataSource">
     <property name="driverClass" value="com.mysql.jdbc.Driver"/>
     <property name="jdbcUrl"
     value="jdbc:mysql://localhost:3306/remex?useUnicode=true&amp;characterEncoding=utf-8&amp;zeroDateTimeBehavior=convertToNull&amp;autoReconnect=true" />
