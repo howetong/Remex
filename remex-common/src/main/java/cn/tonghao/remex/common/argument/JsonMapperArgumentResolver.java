@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * 返回参数解析器
+ * 参数解析器
  */
 public class JsonMapperArgumentResolver implements
         HandlerMethodArgumentResolver {

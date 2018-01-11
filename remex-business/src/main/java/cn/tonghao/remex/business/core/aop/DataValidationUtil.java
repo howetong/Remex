@@ -1,6 +1,9 @@
 package cn.tonghao.remex.business.core.aop;
 
 import cn.tonghao.remex.business.core.log.RemexLogger;
+import cn.tonghao.remex.business.pay.enums.StandardResponseCode;
+import cn.tonghao.remex.common.exception.BusinessException;
+import cn.tonghao.remex.common.exception.ErrorCodeDefinition;
 import cn.tonghao.remex.common.util.JsonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -30,7 +33,7 @@ public class DataValidationUtil {
             } else {
                 Set<ConstraintViolation<T>> constraintViolations = validator.validate(bean);
                 for (ConstraintViolation<T> violation : constraintViolations) {
-                    sb.append(violation.getPropertyPath()).append(":").append(violation.getMessage()).append(" ,");
+                    sb.append(violation.getPropertyPath()).append(":").append(violation.getMessage()).append(" ");
                 }
             }
         } catch (RuntimeException e) {
@@ -39,7 +42,7 @@ public class DataValidationUtil {
         }
         if(StringUtils.isNotEmpty(sb.toString())){
             logger.info("异常入参：{}", JsonUtil.toString(bean));
-            throw new RuntimeException(sb.toString());
+            throw new BusinessException(ErrorCodeDefinition.INVALID_PARAMETER);
         }
     }
 }

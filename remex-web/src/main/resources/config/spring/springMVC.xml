@@ -12,18 +12,16 @@
     <!-- 自动扫描controller包下的所有类，如果@Controller注入为bean -->
     <context:component-scan base-package="cn.tonghao.remex.controller" />
 
-    <!-- 以下为SpringMVC配置 -->
-    <mvc:annotation-driven>
-        <mvc:argument-resolvers>
-            <bean class="cn.tonghao.remex.common.argument.JsonMapperArgumentResolver"/>
-        </mvc:argument-resolvers>
-        <!-- 返回json数据，@response使用 -->
-        <mvc:message-converters>
-            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
-                <constructor-arg value="UTF-8"/>
-            </bean>
-        </mvc:message-converters>
-    </mvc:annotation-driven>
+    <!-- 配置文件config -->
+    <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
+        <property name="locations">
+            <list>
+                <value>classpath:common.properties</value>
+                <value>classpath:application.properties</value>
+                <value>classpath:remex.properties</value>
+            </list>
+        </property>
+    </bean>
 
     <!-- 静态资源映射 -->
     <mvc:resources mapping="/static/**" location="/static/"/>

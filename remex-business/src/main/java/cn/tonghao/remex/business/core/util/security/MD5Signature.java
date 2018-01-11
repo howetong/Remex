@@ -134,7 +134,7 @@ public class MD5Signature {
 
     public static boolean verify(String content, String sign, String key, String charset)
             throws Exception {
-        String tosign = (content == null ? "" : content) + key;
+         String tosign = (content == null ? "" : content) + key;
         try {
             String mySign = DigestUtils.md5Hex(getContentBytes(tosign, charset));
 

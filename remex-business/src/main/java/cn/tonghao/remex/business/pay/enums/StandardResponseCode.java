@@ -6,6 +6,8 @@ package cn.tonghao.remex.business.pay.enums;
 public enum StandardResponseCode {
     SUCCESS(0, "操作成功", true),
 
+
+    SYS_INVALID_PARAM(990001, "系统异常，请求参数错误"),
     SYS_INVALID_SIGNATURE(990002, "系统异常，非法签名"),
     SYS_INTERNAL_ERROR(990006, "系统内部错误")
     ;

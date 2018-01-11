@@ -1,8 +1,8 @@
-package cn.tonghao.remex.business.core.util;
+package cn.tonghao.remex.common.util;
 
-import cn.tonghao.remex.business.core.log.RemexLogger;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -16,7 +16,7 @@ import static java.util.Calendar.*;
  */
 public class DateTimeUtil {
 
-    private static final Logger logger = RemexLogger.getLogger(DateTimeUtil.class);
+    private static final Logger logger = LoggerFactory.getLogger(DateTimeUtil.class);
 
     public static final int TIME_DAY_MILLISECOND = 86400000;
     // /

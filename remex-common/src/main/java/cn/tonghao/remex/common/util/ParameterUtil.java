@@ -33,7 +33,6 @@ public class ParameterUtil {
                 count++;
             }
         }
-
         return content.toString();
     }
 }

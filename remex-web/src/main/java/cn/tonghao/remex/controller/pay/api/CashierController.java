@@ -9,6 +9,7 @@ import cn.tonghao.remex.business.pay.enums.StandardResponseCode;
 import cn.tonghao.remex.common.annotation.Json;
 import cn.tonghao.remex.common.annotation.ResponseJson;
 import cn.tonghao.remex.common.exception.BusinessException;
+import cn.tonghao.remex.common.util.ConvertUtil;
 import cn.tonghao.remex.common.util.JsonUtil;
 import cn.tonghao.remex.common.util.ParameterUtil;
 import cn.tonghao.remex.common.util.Response;
@@ -43,7 +44,7 @@ public class CashierController {
         logger.info("【布局接口日志】布局接口入参:{}", JsonUtil.toString(layoutReqDTO));
         try {
             //验签
-            String content = ParameterUtil.getSignDataIgnoreNull(JsonUtil.toBean(layoutReqDTO, HashMap.class));
+            String content = ParameterUtil.getSignDataIgnoreNull(ConvertUtil.bean2Map(layoutReqDTO));
             if (!MD5Signature.verify(content, layoutReqDTO.getSign(), MD5KEY)) {
                 logger.info("布局接口非法签名");
                 return ResponseUtil.genResponse(StandardResponseCode.SYS_INVALID_SIGNATURE);
