@@ -20,6 +20,9 @@
     <!-- 配置 JSR303 Bean Validator 定义 -->
     <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"/>
 
+    <!--spring异常处理器-->
+    <bean class="cn.tonghao.remex.common.handle.GlobalExceptionHandler"/>
+
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="${web.view.prefix}"/>
         <property name="suffix" value="${web.view.suffix}"/>

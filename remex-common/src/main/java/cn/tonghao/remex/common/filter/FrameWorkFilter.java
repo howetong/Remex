@@ -103,17 +103,6 @@ public class FrameWorkFilter implements Filter {
                 } catch (IOException e) {
                     logger.error(sequenceId.get(), e);
                 }
-            } else if (root instanceof JsonParseException) {
-                FailData failData = new FailData();
-                failData.setMsg("参数 Json 格式错误");
-                failData.setErrorCode(970001);
-                try {
-                    messageConverter.write(failData, MediaType.APPLICATION_JSON, new ServletServerHttpResponse((HttpServletResponse) response));
-                } catch (HttpMessageNotWritableException e) {
-                    logger.error(sequenceId.get(), e);
-                } catch (IOException e) {
-                    logger.error(sequenceId.get(), e);
-                }
             } else {
                 throw new RuntimeException(ex);
             }

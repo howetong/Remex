@@ -42,7 +42,7 @@ public class DataValidationUtil {
         }
         if(StringUtils.isNotEmpty(sb.toString())){
             logger.info("异常入参：{}", JsonUtil.toString(bean));
-            throw new BusinessException(ErrorCodeDefinition.INVALID_PARAMETER);
+            throw new RuntimeException(sb.toString());
         }
     }
 }
