@@ -38,6 +38,16 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
+    <!--base64解码处理过滤器-->
+    <filter>
+        <filter-name>base64DecodingFilter</filter-name>
+        <filter-class>cn.tonghao.remex.common.filter.Base64DecodingFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>base64DecodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
     <!--跨域请求处理过滤器-->
     <filter>
         <filter-name>frameWorkFilter</filter-name>
@@ -49,16 +59,6 @@
     </filter>
     <filter-mapping>
         <filter-name>frameWorkFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
-    <!--base64解码处理过滤器-->
-    <filter>
-        <filter-name>base64DecodingFilter</filter-name>
-        <filter-class>cn.tonghao.remex.common.filter.Base64DecodingFilter</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>base64DecodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
