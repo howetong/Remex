@@ -10,7 +10,29 @@
         http://www.springframework.org/schema/mvc/spring-mvc-4.1.xsd">
 
     <!-- 自动扫描controller包下的所有类，如果@Controller注入为bean -->
-    <context:component-scan base-package="cn.tonghao.remex.controller" />
+    <context:component-scan base-package="cn.tonghao.remex.controller.**" />
+
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="cn.tonghao.remex.common.argument.JsonMapperArgumentResolver"/>
+        </mvc:argument-resolvers>
+        <mvc:return-value-handlers>
+            <bean class="cn.tonghao.remex.common.method.ResponseJsonMethodProcessor">
+                <property name="messageConverter">
+                    <bean class="cn.tonghao.remex.common.util.Base64JsonHttpMessageConverter"/>
+                </property>
+                <property name="beanWrappers">
+                    <list>
+                        <bean class="cn.tonghao.remex.common.method.impl.ResponseWrapper"/>
+                        <bean class="cn.tonghao.remex.common.method.impl.DefaultBeanWrapper"/>
+                    </list>
+                </property>
+            </bean>
+        </mvc:return-value-handlers>
+    </mvc:annotation-driven>
+
+    <!--spring异常处理器-->
+    <bean class="cn.tonghao.remex.common.handle.GlobalExceptionHandler"/>
 
     <!-- 配置文件config -->
     <bean class="org.springframework.beans.factory.config.PreferencesPlaceholderConfigurer">
