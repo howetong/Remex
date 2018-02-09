@@ -10,7 +10,7 @@ import java.security.SignatureException;
 /**
  * MD5摘要生成和摘要验证工具类
  */
-public class MD5Signature {
+public class MD5Utils {
 
     /**
      * MD5直接生成摘要
