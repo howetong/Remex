@@ -3,12 +3,11 @@ package cn.tonghao.remex.controller.pay.api;
 import cn.tonghao.remex.business.core.annotation.BeanValid;
 import cn.tonghao.remex.business.core.log.RemexLogger;
 import cn.tonghao.remex.business.core.util.ResponseUtil;
-import cn.tonghao.remex.business.core.util.security.MD5Signature;
+import cn.tonghao.remex.common.util.security.MD5Signature;
 import cn.tonghao.remex.business.pay.dto.cashier.CashierDetailLayoutReqDTO;
 import cn.tonghao.remex.business.pay.enums.StandardResponseCode;
 import cn.tonghao.remex.common.annotation.Json;
 import cn.tonghao.remex.common.annotation.ResponseJson;
-import cn.tonghao.remex.common.exception.BusinessException;
 import cn.tonghao.remex.common.util.ConvertUtil;
 import cn.tonghao.remex.common.util.JsonUtil;
 import cn.tonghao.remex.common.util.ParameterUtil;
@@ -19,8 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by howetong on 2018/1/5.
