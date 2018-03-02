@@ -138,7 +138,7 @@ public class RSAUtils {
     /**
      * 使用私钥对字符串进行签名并返回签名值
      * @param src 要签名的字符串
-     * @param
+     * @param privateKey 私钥串
      * @return
      */
     public static String sign(String src, String privateKey, String charSet){
