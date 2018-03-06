@@ -1,0 +1,55 @@
+package rules.bookstore.supplier;
+
+import cn.tonghao.remex.business.core.drools.dto.Book;
+import java.util.HashSet;
+
+dialect  "mvel"
+global java.util.Set supplierSet;
+
+
+rule "default book supplier rule"
+    lock-on-active //执行过一次之后就不再执行，防止后续的条件执行过程中改变变量的值导致重新满足该规则之后再次执行对应的操作
+    salience 10  //值越大，优先级越高
+
+    when
+        b : Book(name == "Java核心思想");
+    then
+        supplierSet.add("机械工业出版社");
+        supplierSet.add("清华大学出版社");
+        supplierSet.add("电子工业出版社");
+        b.setSupplier(supplierSet);
+end
+
+rule "the price rule1"
+    lock-on-active
+    salience 9
+
+    when
+        b : Book( basePrice > 50 && basePrice < 55)
+    then
+        supplierSet.remove("电子工业出版社");
+        b.setSupplier(supplierSet);
+end
+
+rule "the price rule2"
+    lock-on-active
+    salience 9
+
+    when
+       b : Book( basePrice >= 55)
+    then
+      supplierSet.remove("机械工业出版社");
+      supplierSet.remove("清华大学出版社");
+      b.setSupplier(supplierSet);
+end
+
+rule "the discount rule"
+    salience 8
+
+    when
+        b : Book(routeFactors contains "discount" && (Double.valueOf(discount) < 0.95))
+    then
+        supplierSet.remove("清华大学出版社");
+        b.setSupplier(supplierSet);
+end
+

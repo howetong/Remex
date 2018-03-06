@@ -1,0 +1,71 @@
+package rules.bookstore.price;
+
+import cn.tonghao.remex.business.core.drools.dto.Book;
+import function cn.tonghao.remex.business.core.drools.service.RuleTools.isEmpty;
+import function cn.tonghao.remex.business.core.drools.service.RuleTools.printTest;
+
+
+function void functionName(){
+}
+
+
+//默认售价为书的原价
+rule "default book price rule"
+    lock-on-active //执行过一次之后就不再执行，防止后续的条件执行过程中改变变量的值导致重新满足该规则之后再次执行对应的操作
+    salience 10  //值越大，优先级越高
+
+    when
+        $b : Book($salesPrice : salesPrice);
+        eval(isEmpty(""))
+    then
+        $salesPrice = $b.getBasePrice();
+        $b.setSalesPrice($salesPrice);
+        update($b);
+        printTest("hello");
+end
+
+//计算机类图书打95折
+rule "the clz of computer price rule 95% discount"
+    //no-loop
+    lock-on-active
+    salience 9
+
+    when
+        $b : Book( clz == "computer", $salesPrice : salesPrice)
+    then
+        $salesPrice = $salesPrice * 0.95;
+        $b.setSalesPrice($salesPrice);
+        update($b);
+end
+
+
+//销售区域是中国的话，在优惠的基础上再减两块钱
+rule "china area sales price rule"
+    //no-loop
+    lock-on-active
+    salience 8
+
+    when
+        $b : Book( salesArea == "china", $salesPrice : salesPrice )
+    then
+        $salesPrice = $salesPrice - 2;
+        System.out.println($salesPrice);
+        $b.setSalesPrice($salesPrice);
+        update($b);
+
+end
+
+
+//如果书的出版时间超过2年的话，售价在原价的基础上打8折, 与计算机类图书优惠不能同时享受
+rule "years 2+ rule"
+    lock-on-active
+    salience 7
+
+    when
+        $b : Book( years > 2 &&  clz != "computer",$salesPrice : salesPrice)
+    then
+        $salesPrice = $salesPrice * 0.8;
+        $b.setSalesPrice($salesPrice);
+        update($b);
+end
+

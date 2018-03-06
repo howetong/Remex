@@ -10,13 +10,13 @@ import static org.junit.Assert.*;
 /**
  * Created by howetong on 2018/2/8.
  */
-public class MD5SignatureTest {
+public class MD5UtilsTest {
 
     @Test
     public void md5Sign() throws Exception{
         String str = "hello,world!";
-        System.out.println(MD5Signature.md5Direct(str, null));
-        System.out.println(MD5Signature.md5Direct(str));
+        System.out.println(MD5Utils.md5Direct(str, null));
+        System.out.println(MD5Utils.md5Direct(str));
         System.out.println(new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()));
     }
 

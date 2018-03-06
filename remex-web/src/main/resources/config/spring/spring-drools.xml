@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:kie="http://drools.org/schema/kie-spring"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+       http://drools.org/schema/kie-spring http://drools.org/schema/kie-spring.xsd">
+
+   <kie:kmodule id="remex-kmodule">
+       <kie:kbase name="bookprice_kbase" packages="rules.bookstore.price">
+           <kie:ksession name="bookprice_ksession" scope="prototype" />
+       </kie:kbase>
+       <kie:kbase name="booksupplier_kbase" packages="rules.bookstore.supplier">
+           <kie:ksession name="booksupplier_ksession" scope="prototype" />
+       </kie:kbase>
+       <!--<kie:kbase name="payChannel_kbase" packages="rules.prs.channel">
+           <kie:ksession name="paychannel_ksession" scope="prototype" />
+       </kie:kbase>-->
+   </kie:kmodule>
+
+    <bean id="kiePostProcessor" class="org.kie.spring.annotations.KModuleAnnotationPostProcessor" />
+</beans>

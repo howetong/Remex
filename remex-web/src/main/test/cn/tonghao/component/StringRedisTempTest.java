@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * Created by tonghao on 2017/6/23.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = {"classpath:config/spring/spring-web.xml",
+@ContextConfiguration(locations = {"classpath:config/spring/spring-redis.xml",
         "classpath:config/spring/spring-redis.xml",
         "classpath:config/spring/spring-dal.xml"})
 public class StringRedisTempTest {
