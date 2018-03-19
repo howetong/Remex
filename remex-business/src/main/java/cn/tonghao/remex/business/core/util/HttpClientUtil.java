@@ -67,7 +67,7 @@ public class HttpClientUtil {
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
         httpPost.setHeader("Cookie","JSESSIONID=423373580E35C43CFBD4EF364792C5A8");
-        return executeHttpPost(httpPost,client);
+        return executeHttpPost(httpPost,client, entity);
     }
 
 
@@ -97,7 +97,7 @@ public class HttpClientUtil {
         //指定报文头【Content-type】、【User-Agent】
         httpPost.setHeader("Content-type", "application/json");
         httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-        return executeHttpPost(httpPost,client);
+        return executeHttpPost(httpPost,client,entity);
     }
 
     /**
@@ -128,7 +128,7 @@ public class HttpClientUtil {
             //指定报文头【Content-type】、【User-Agent】
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-            return executeHttpPost(httpPost,client);
+            return executeHttpPost(httpPost,client, entity);
         }catch(NoSuchAlgorithmException | KeyStoreException | KeyManagementException e){
             logger.info("https请求出现异常,{}",e.getMessage());
             return null;
@@ -158,15 +158,18 @@ public class HttpClientUtil {
      * @param client httpclient客户端
      * @return 响应字符串
      */
-    private static String executeHttpPost(HttpPost httpPost,CloseableHttpClient client){
+    private static String executeHttpPost(HttpPost httpPost,CloseableHttpClient client, StringEntity entity){
         CloseableHttpResponse response;
         try {
             //执行请求操作，并拿到结果（同步阻塞）
             response = client.execute(httpPost);
+            String responseStr = null;
             HttpEntity respEntity = response.getEntity();
             if (respEntity != null){
-                return EntityUtils.toString(respEntity);
+                responseStr = EntityUtils.toString(respEntity,"utf-8");
             }
+            EntityUtils.consume(entity);
+            return responseStr;
         } catch (IOException e) {
             //调用异常，timeOut或者协议错误
             logger.info("http请求异常！,{}",e.getMessage());
@@ -190,6 +193,8 @@ public class HttpClientUtil {
             trustStore.load(instream, keyStorePass.toCharArray());
             // 相信自己的CA和所有自签名的证书
             sc = SSLContexts.custom().loadTrustMaterial(trustStore, new TrustSelfSignedStrategy()).build();
+            //如果要验证客户端证书，则要加载客户端证书
+            //loadKeyMaterial(trustStore, certPwd.toCharArray()).build
         }catch (KeyStoreException | NoSuchAlgorithmException| CertificateException | IOException | KeyManagementException e) {
             logger.info("生成SSL上下文异常",e.getMessage());
             e.printStackTrace();
