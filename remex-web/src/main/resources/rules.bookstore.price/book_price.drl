@@ -1,8 +1,8 @@
 package rules.bookstore.price;
 
 import cn.tonghao.remex.business.core.drools.dto.Book;
-import function cn.tonghao.remex.business.core.drools.service.RuleTools.isEmpty;
-import function cn.tonghao.remex.business.core.drools.service.RuleTools.printTest;
+//import function cn.tonghao.remex.business.core.drools.service.RuleTools.isEmpty;
+import function cn.tonghao.remex.business.core.drools.util.RuleTools.printTest;
 
 
 function void functionName(){
@@ -16,7 +16,7 @@ rule "default book price rule"
 
     when
         $b : Book($salesPrice : salesPrice);
-        eval(isEmpty(""))
+        //eval(isEmpty(""))
     then
         $salesPrice = $b.getBasePrice();
         $b.setSalesPrice($salesPrice);

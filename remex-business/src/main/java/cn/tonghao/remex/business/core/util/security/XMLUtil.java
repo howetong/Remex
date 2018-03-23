@@ -1,7 +1,7 @@
 package cn.tonghao.remex.business.core.util.security;
 
 import cn.tonghao.remex.business.core.log.RemexLogger;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;

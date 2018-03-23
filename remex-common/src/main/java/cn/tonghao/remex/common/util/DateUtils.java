@@ -8,7 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * 日期工具类, 继承org.apache.commons.lang.time.DateUtils类
+ * 日期工具类, 继承org.apache.commons.lang3.time.DateUtils类
  */
 public class DateUtils extends org.apache.commons.lang3.time.DateUtils {
 

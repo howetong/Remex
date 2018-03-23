@@ -1,7 +1,7 @@
-package cn.tonghao.remex.business.core.util;
+package cn.tonghao.remex.common.util.http;
 
-import cn.tonghao.remex.business.core.log.RemexLogger;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -19,6 +19,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.SSLContext;
@@ -35,9 +36,9 @@ import java.security.cert.CertificateException;
  * Http请求工具类
  * Created by tonghao on 2017/5/8.
  */
-public class HttpClientUtil {
+public class HttpClientUtils {
 
-    private static RemexLogger logger = (RemexLogger) LoggerFactory.getLogger(RemexLogger.class);
+    private static Logger logger = LoggerFactory.getLogger(HttpClientUtils.class);
 
     private static RequestConfig requestConfig = null;
 
@@ -47,7 +48,7 @@ public class HttpClientUtil {
                 .setConnectionRequestTimeout(10000).setSocketTimeout(20000).build();
     }
 
-    private HttpClientUtil() {
+    private HttpClientUtils() {
     }
 
     public static String sendData(String url, String str) {
@@ -78,7 +79,7 @@ public class HttpClientUtil {
      * @param param 请求参数
      * @return 返回请求结果字符串
      */
-    public static String sendDataWithCert(String url, String param,String keyStore,String keyPass) {
+    public static String executePostReqWithCert(String url, String param,String keyStore,String keyPass) {
 
         SSLContext sslContext = createCertSSL(keyStore,keyPass);
         //设置连接工厂
@@ -106,7 +107,7 @@ public class HttpClientUtil {
      * @param param 请求参数
      * @return String　返回请求结果
      */
-    public static String sendDataWithAllCerts(String url, String param){
+    public static String executePostReq(String url, String param){
         try{
             //信任所有证书
             SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, (TrustStrategy) (chain, authType) -> {
@@ -129,7 +130,7 @@ public class HttpClientUtil {
             httpPost.setHeader("Content-type", "application/json");
             httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
             return executeHttpPost(httpPost,client, entity);
-        }catch(NoSuchAlgorithmException | KeyStoreException | KeyManagementException e){
+        } catch(NoSuchAlgorithmException | KeyStoreException | KeyManagementException e){
             logger.info("https请求出现异常,{}",e.getMessage());
             return null;
         }
@@ -208,5 +209,6 @@ public class HttpClientUtil {
         }
         return sc;
     }
+
 }
 

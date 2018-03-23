@@ -1,7 +1,7 @@
 package cn.tonghao.remex.common.util.security;
 
 import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;

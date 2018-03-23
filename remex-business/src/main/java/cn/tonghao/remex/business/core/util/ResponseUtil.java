@@ -2,7 +2,7 @@ package cn.tonghao.remex.business.core.util;
 
 import cn.tonghao.remex.business.pay.enums.StandardResponseCode;
 import cn.tonghao.remex.common.util.Response;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * Created by howetong on 2018/1/10.

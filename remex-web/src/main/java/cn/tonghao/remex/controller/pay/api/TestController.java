@@ -1,5 +1,7 @@
 package cn.tonghao.remex.controller.pay.api;
 
+import cn.tonghao.remex.business.bill.CommonFileBillStrategy;
+import cn.tonghao.remex.business.bill.IChannelFileBillStrategy;
 import cn.tonghao.remex.business.core.drools.dto.Book;
 import cn.tonghao.remex.business.core.drools.service.BookService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashSet;
 import java.util.Set;
@@ -20,11 +23,20 @@ public class TestController {
     @Autowired
     private BookService bookService;
 
+    @Resource
+    private IChannelFileBillStrategy channelFileBillStrategy;
+
     @RequestMapping("/test")
     @ResponseBody
     public String sayHello(){
         return "hello";
     }
+
+    @RequestMapping("/testBill")
+    public void getBill(){
+        channelFileBillStrategy.getFillBill();
+    }
+
 
     @RequestMapping(value = "/order")
     @ResponseBody
