@@ -42,20 +42,27 @@ public class HttpClientUtils {
 
     private static RequestConfig requestConfig = null;
 
+    private static PoolingHttpClientConnectionManager connMgr = null;
+
     static{
+        connMgr = new PoolingHttpClientConnectionManager();
+        // 设置连接池大小
+        connMgr.setMaxTotal(100);
+        connMgr.setDefaultMaxPerRoute(connMgr.getMaxTotal());
         //设置连接超时时间
-        requestConfig = RequestConfig.custom().setConnectTimeout(10000)
-                .setConnectionRequestTimeout(10000).setSocketTimeout(20000).build();
+        requestConfig = RequestConfig.custom()
+                .setConnectTimeout(2000) //设置连接超时时间
+                .setConnectionRequestTimeout(2000) //设置从连接池获取连接实例超时时间
+                .setSocketTimeout(5000).build(); //设置读取超时时间
     }
 
     private HttpClientUtils() {
     }
 
-    public static String sendData(String url, String str) {
-        SSLConnectionSocketFactory sslFactory = SSLConnectionSocketFactory.getSocketFactory();
+    public static String doPost(String url, String str) {
 
-        //创建httpClient对象
-        CloseableHttpClient client = getHttpClient(sslFactory);
+        //获取默认实例
+        CloseableHttpClient httpClient = HttpClients.createDefault();
 
         //创建post方式请求对象
         HttpPost httpPost = new HttpPost(url);
@@ -66,9 +73,32 @@ public class HttpClientUtils {
         //设置header信息
         //指定报文头【Content-type】、【User-Agent】
         httpPost.setHeader("Content-type", "application/json");
-        httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-        httpPost.setHeader("Cookie","JSESSIONID=423373580E35C43CFBD4EF364792C5A8");
-        return executeHttpPost(httpPost,client, entity);
+        String responseStr = null;
+        CloseableHttpResponse response = null;
+        try {
+            //执行请求操作，并拿到结果（同步阻塞）
+            response = httpClient.execute(httpPost);
+            HttpEntity respEntity = response.getEntity();
+            if (respEntity != null){
+                responseStr = EntityUtils.toString(respEntity,"utf-8");
+            }
+            EntityUtils.consume(entity);
+        } catch (IOException e) {
+            //调用异常，timeOut或者协议错误
+            logger.info("http请求异常！,{}", e);
+        } finally {
+            try {
+                if(response != null) {
+                    response.close();
+                }
+                if (httpClient != null) {
+                    httpClient.close();
+                }
+            } catch (IOException e) {
+                logger.error("资源释放异常, {}", e);
+            }
+        }
+        return responseStr;
     }
 
 
@@ -85,7 +115,7 @@ public class HttpClientUtils {
         //设置连接工厂
         SSLConnectionSocketFactory sslFactory = new SSLConnectionSocketFactory(sslContext);
         //创建httpClient对象
-        CloseableHttpClient client = getHttpClient(sslFactory);
+        CloseableHttpClient client = HttpClients.custom().setSSLSocketFactory(sslFactory).setConnectionManager(connMgr).build();
 
         //创建post方式请求对象
         HttpPost httpPost = new HttpPost(url);
@@ -97,7 +127,6 @@ public class HttpClientUtils {
         //设置header信息
         //指定报文头【Content-type】、【User-Agent】
         httpPost.setHeader("Content-type", "application/json");
-        httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
         return executeHttpPost(httpPost,client,entity);
     }
 
@@ -117,7 +146,7 @@ public class HttpClientUtils {
             SSLConnectionSocketFactory sslFactory = new SSLConnectionSocketFactory(sslContext,new String[]{"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.2"}, null, NoopHostnameVerifier.INSTANCE);
 
             //创建httpClient对象
-            CloseableHttpClient client = getHttpClient(sslFactory);
+            CloseableHttpClient httpClient = HttpClients.custom().setSSLSocketFactory(sslFactory).setConnectionManager(connMgr).build();
 
             //创建post方式请求对象
             HttpPost httpPost = new HttpPost(url);
@@ -128,54 +157,33 @@ public class HttpClientUtils {
             //设置header信息
             //指定报文头【Content-type】、【User-Agent】
             httpPost.setHeader("Content-type", "application/json");
-            httpPost.setHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-            return executeHttpPost(httpPost,client, entity);
+            return executeHttpPost(httpPost, httpClient, entity);
         } catch(NoSuchAlgorithmException | KeyStoreException | KeyManagementException e){
             logger.info("https请求出现异常,{}",e.getMessage());
             return null;
         }
     }
 
-
-    private static CloseableHttpClient getHttpClient(SSLConnectionSocketFactory sslFactory){
-
-        // 设置协议http和https对应的处理socket链接工厂的对象
-        Registry<ConnectionSocketFactory> socketFactoryRegistry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", PlainConnectionSocketFactory.getSocketFactory())
-                .register("https", sslFactory)
-                .build();
-        PoolingHttpClientConnectionManager connManager = new PoolingHttpClientConnectionManager(socketFactoryRegistry);
-        // 将最大连接数增加到200
-        connManager.setMaxTotal(200);
-        // 将每个路由基础的连接增加到30
-        connManager.setDefaultMaxPerRoute(30);
-        //创建httpClient对象
-        return HttpClients.custom().setConnectionManager(connManager).build();
-    }
-
     /**
      * 执行post请求并返回影响结果字符串
      * @param httpPost post请求
-     * @param client httpclient客户端
+     * @param httpClient httpclient客户端
      * @return 响应字符串
      */
-    private static String executeHttpPost(HttpPost httpPost,CloseableHttpClient client, StringEntity entity){
-        CloseableHttpResponse response;
+    private static String executeHttpPost(HttpPost httpPost, CloseableHttpClient httpClient, StringEntity entity){
+        String responseStr = null;
         try {
-            //执行请求操作，并拿到结果（同步阻塞）
-            response = client.execute(httpPost);
-            String responseStr = null;
+            CloseableHttpResponse response = httpClient.execute(httpPost);
             HttpEntity respEntity = response.getEntity();
             if (respEntity != null){
                 responseStr = EntityUtils.toString(respEntity,"utf-8");
             }
             EntityUtils.consume(entity);
-            return responseStr;
         } catch (IOException e) {
             //调用异常，timeOut或者协议错误
-            logger.info("http请求异常！,{}",e.getMessage());
+            logger.info("http请求异常！,{}", e);
         }
-        return null;
+        return responseStr;
     }
 
     /**
@@ -197,8 +205,7 @@ public class HttpClientUtils {
             //如果要验证客户端证书，则要加载客户端证书
             //loadKeyMaterial(trustStore, certPwd.toCharArray()).build
         }catch (KeyStoreException | NoSuchAlgorithmException| CertificateException | IOException | KeyManagementException e) {
-            logger.info("生成SSL上下文异常",e.getMessage());
-            e.printStackTrace();
+            logger.info("生成SSL上下文异常, {}", e);
         } finally {
             try {
                 if (instream != null)

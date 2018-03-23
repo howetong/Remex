@@ -111,7 +111,7 @@ public class WeChatFileBillStrategyImpl extends CommonFileBillStrategy implement
 
     public enum PartnerEnum {
 
-        PARTER1("1495297842", "wx5fb9bb3c5bf4479e");
+        PARTER1("1495297853", "wg5fbhbb3j5bf4479e");
 
         PartnerEnum(String parterId, String appId) {
             this.parterId = parterId;
