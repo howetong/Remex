@@ -8,9 +8,7 @@ import cn.tonghao.remex.business.bill.CommonFileBillStrategy;
 import cn.tonghao.remex.business.bill.IChannelFileBillStrategy;
 import cn.tonghao.remex.business.core.log.RemexLogger;
 import cn.tonghao.remex.business.pay.util.WechatPayUtil;
-import cn.tonghao.remex.common.util.CompressUtil;
 import cn.tonghao.remex.common.util.http.HttpClientUtils;
-import net.lingala.zip4j.exception.ZipException;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -21,10 +19,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
- * 宝付渠道对账单获取
+ * 渠道对账单获取
  * Created by howetong on 2018/2/11.
  */
 @Service("wechatFileBillStrategy")

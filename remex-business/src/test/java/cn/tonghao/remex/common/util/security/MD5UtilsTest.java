@@ -2,8 +2,8 @@ package cn.tonghao.remex.common.util.security;
 
 import org.junit.Test;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.Assert.*;
 
@@ -17,7 +17,9 @@ public class MD5UtilsTest {
         String str = "hello,world!";
         System.out.println(MD5Utils.md5Direct(str, null));
         System.out.println(MD5Utils.md5Direct(str));
-        System.out.println(new SimpleDateFormat("yyyyMMddhhmmss").format(new Date()));
+        LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        System.out.println(now.format(formatter));
     }
 
 }

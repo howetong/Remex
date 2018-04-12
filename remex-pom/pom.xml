@@ -10,6 +10,8 @@
     <version>1.0.0</version>
 
     <properties>
+        <java_source_version>1.8</java_source_version>
+        <java_target_version>1.8</java_target_version>
         <slf4j.version>1.7.7</slf4j.version>
         <springframework_version>4.3.3.RELEASE</springframework_version>
         <validator.version>5.1.1.Final</validator.version>
