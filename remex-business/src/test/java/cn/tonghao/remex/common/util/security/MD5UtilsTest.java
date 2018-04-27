@@ -5,8 +5,6 @@ import org.junit.Test;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-import static org.junit.Assert.*;
-
 /**
  * Created by howetong on 2018/2/8.
  */
