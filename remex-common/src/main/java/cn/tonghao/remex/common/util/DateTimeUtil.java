@@ -5,13 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+
+import static java.util.Calendar.*;
 
 /**
  * 时间处理类
@@ -36,10 +33,6 @@ public class DateTimeUtil {
     private static final String DAY_FORMAT = "yyyyMMdd";
 
     private static final String TIMESTAMP_FORMAT = "HHmmss";
-
-    private static final String DATE_FORMAT_PAY = "yyyyMMddHHmmss";
-
-    private static final String DATE_FORMAT_PAY_2Y = "yyMMddHHmmss";
 
     private static final String DATE_FORMAT_MS = "yyyyMMddHHmmssSSS";
 
@@ -189,7 +182,7 @@ public class DateTimeUtil {
      * @param format   时间格式，如yyyy-MM-dd HH:mm:ss
      * @return String 返回格式化后的时间，格式由参数<code>format</code>定义
      */
-    public static String getFormatDateTime(Date currDate, String format) {
+    private static String getFormatDateTime(Date currDate, String format) {
         if (currDate == null) {
             return "";
         }
@@ -211,7 +204,7 @@ public class DateTimeUtil {
      * @param format   日期格式，如yyyy-MM-dd
      * @return Date 返回格式化后的日期，格式由参数<code>format</code>定义
      */
-    public static Date getFormatDateTime(String currDate, String format) {
+    private static Date getFormatDateTime(String currDate, String format) {
         if (currDate == null) {
             return null;
         }
@@ -287,12 +280,10 @@ public class DateTimeUtil {
     }
 
     /**
-     * @param first
-     * @param second
      * @return 获取两个Date之间的天数的列表
      */
     public static List<Date> getDaysListBetweenDates(Date first, Date second) {
-        List<Date> dateList = new ArrayList<Date>();
+        List<Date> dateList = new ArrayList<>();
         Date d1 = getFormatDateTime(getFormatDate(first), DATE_FORMAT);
         Date d2 = getFormatDateTime(getFormatDate(second), DATE_FORMAT);
         if (d1.compareTo(d2) > 0) {
@@ -426,38 +417,6 @@ public class DateTimeUtil {
         return cal.getTime();
     }
 
-    /**
-     * 时间查询时,结束时间的 23:59:59
-     */
-    public static String addDateEndfix(String datestring) {
-        if ((datestring == null) || datestring.equals("")) {
-            return null;
-        }
-        return datestring + " 23:59:59";
-    }
-
-    /**
-     * 返回格式化的日期
-     * @param dateStr 格式"yyyy-MM-dd 23:59:59";
-     * @return
-     */
-    public static Date getFormatDateEndfix(String dateStr) {
-        dateStr = addDateEndfix(dateStr);
-        return getFormatDateTime(dateStr);
-    }
-
-    /**
-     * 返回格式化的日期
-     * @param datePre 格式"yyyy-MM-dd HH:mm:ss";
-     * @return
-     */
-    public static Date formatEndTime(String datePre) {
-        if (datePre == null)
-            return null;
-        String dateStr = addDateEndfix(datePre);
-        return getFormatDateTime(dateStr);
-    }
-
     // date1加上compday天数以后的日期与当前时间比较，如果大于当前时间返回true，否则false
     public static Boolean compareDay(Date date1, int compday) {
         if (date1 == null)
@@ -471,158 +430,7 @@ public class DateTimeUtil {
     }
 
     /**
-     * 进行时段格式转换，对于输入的48位的01串，将进行如下操作： <li>
-     * 1.先将输入中每个0变成两个0，每个1变成2个1，形成一个96位的二进制串。</li> <li>
-     * 2.将上述的96位的二进制串分成3组，每组32位。</li> <li>3.将每个32位的二进制串转换成一个8位的16进制串。</li>
-     * <li>4.将3个8位的16进制串合并成一个串，中间以","分割。</li>
-     *
-     * @param timespan 一个48位的二进制串，如："011111111011111111111111111111111111111111111110"
-     * @return 一个16进制串，每位间以","分割。如："3fffcfff,ffffffff,fffffffc"
-     */
-    public static String convertBinaryTime2Hex(String timespan) {
-        if (timespan == null || timespan.equals("")) {
-            return "";
-        }
-
-        String ret = "";
-        String tmp = "";
-        for (int i = 0; i < timespan.length(); i++) {
-            tmp += timespan.charAt(i);
-            tmp += timespan.charAt(i);
-            // tmp += i;
-            if ((i + 1) % 16 == 0) {
-                if (!ret.equals("")) {
-                    ret += ",";
-                }
-                Long t = Long.parseLong(tmp, 2);
-                String hexStr = Long.toHexString(t);
-                if (hexStr.length() < 8) {
-                    int length = hexStr.length();
-                    for (int n = 0; n < 8 - length; n++) {
-                        hexStr = "0" + hexStr;
-                    }
-                }
-
-                ret += hexStr;
-                tmp = "";
-            }
-        }
-
-        return ret;
-    }
-
-    /**
-     * 进行时段格式转换，将输入的26位的2进制串转换成48位的二进制串。
-     *
-     * @param timespan 一个16进制串，每位间以","分割。如："3fffcfff,ffffffff,fffffffc"
-     * @return 一个48位的二进制串，如："011111111011111111111111111111111111111111111110"
-     */
-    public static String convertHexTime2Binary(String timespan) {
-        if (timespan == null || timespan.equals("")) {
-            return "";
-        }
-
-        String tmp = "";
-        String ret = "";
-        String[] strArr = timespan.split(",");
-        for (int i = 0; i < strArr.length; i++) {
-            String binStr = Long.toBinaryString(Long.parseLong(strArr[i], 16));
-            if (binStr.length() < 32) {
-                int length = binStr.length();
-                for (int n = 0; n < 32 - length; n++) {
-                    binStr = "0" + binStr;
-                }
-            }
-            tmp += binStr;
-        }
-
-        for (int i = 0; i < 48; i++) {
-            ret += tmp.charAt(i * 2);
-        }
-
-        return ret;
-    }
-
-    /**
-     * 进行时段格式转换，将输入的32位的10进制串转换成48位的二进制串。
-     *
-     * @param timespan 一个16进制串，每位间以","分割。如："1234567890,1234567890,1234567890c"
-     * @return 一个48位的二进制串，如："011111111011111111111111111111111111111111111110"
-     */
-    public static String convertDecTime2Binary(String timespan) {
-        if (timespan == null || timespan.equals("")) {
-            return "";
-        }
-
-        String tmp = "";
-        String ret = "";
-        String[] strArr = timespan.split(",");
-        for (int i = 0; i < strArr.length; i++) {
-            String binStr = Long.toBinaryString(Long.parseLong(strArr[i], 10));
-            if (binStr.length() < 32) {
-                int length = binStr.length();
-                for (int n = 0; n < 32 - length; n++) {
-                    binStr = "0" + binStr;
-                }
-            }
-            tmp += binStr;
-        }
-
-        for (int i = 0; i < 48; i++) {
-            ret += tmp.charAt(i * 2);
-        }
-
-        return ret;
-    }
-
-    /**
-     * 进行时段格式转换，对于输入的48位的01串，将进行如下操作： <li>
-     * 1.先将输入中每个0变成两个0，每个1变成2个1，形成一个96位的二进制串。</li> <li>
-     * 2.将上述的96位的二进制串分成3组，每组32位。</li> <li>3.将每个32位的二进制串转换成一个10位的10进制串。</li>
-     * <li>4.将3个8位的16进制串合并成一个串，中间以","分割。</li>
-     *
-     * @param timespan 一个48位的二进制串，如："011111111011111111111111111111111111111111111110"
-     * @return 一个16进制串，每位间以","分割。如："1234567890,1234567890,1234567890"
-     */
-    public static String convertBinaryTime2Dec(String timespan) {
-        if (timespan == null || timespan.equals("")) {
-            return "";
-        }
-
-        String ret = "";
-        String tmp = "";
-        for (int i = 0; i < timespan.length(); i++) {
-            tmp += timespan.charAt(i);
-            tmp += timespan.charAt(i);
-            // tmp += i;
-            if ((i + 1) % 16 == 0) {
-                if (!ret.equals("")) {
-                    ret += ",";
-                }
-                Long t = Long.parseLong(tmp, 2);
-                String decStr = Long.toString(t);
-                if (decStr.length() < 10) {
-                    int length = decStr.length();
-                    for (int n = 0; n < 10 - length; n++) {
-                        decStr = "0" + decStr;
-                    }
-                }
-
-                ret += decStr;
-                tmp = "";
-            }
-        }
-
-        return ret;
-    }
-
-    /**
      * 计算指定日期+addMonth月+15号 返回格式"2008-02-15"
-     *
-     * @param date
-     * @param addMonth
-     * @param monthDay
-     * @return
      */
     public static String genericSpecdate(Date date, int addMonth, int monthDay) {
         Calendar cal = Calendar.getInstance();
@@ -633,21 +441,11 @@ public class DateTimeUtil {
     }
 
     /**
-     * 获得以今天为单位若干天以前或以后的日期的标准格式"Wed Feb 20 00:00:00 CST 2008"，是0点0分0秒。
-     *
-     * @param idx
-     * @return
-     */
-    public static Date getDateBeforeOrAfterV2(int idx) {
-        return getDateBeforeOrAfter(getFormatDateToDate(getCurrDate()), idx);
-    }
-
-    /**
      * 获得给定时间若干秒以前或以后的日期的标准格式。
      *
-     * @param curDate
-     * @param seconds
-     * @return curDate
+     * @param curDate 指定时间
+     * @param seconds   间隔时间秒数
+     * @return curDate 指定时间加上间隔秒数的时间
      */
     public static Date getSpecifiedDateTimeBySeconds(Date curDate, int seconds) {
         long time = (curDate.getTime() / 1000) + seconds;
@@ -655,70 +453,12 @@ public class DateTimeUtil {
         return curDate;
     }
 
-    /**
-     * 获得给定日期当天23点59分59秒的标准格式。
-     *
-     * @param curDate
-     * @return curDate
-     */
-    public static Date getSpecifiedDateTime_235959(Date curDate) {
-        return getSpecifiedDateTimeBySeconds(getFormatDateToDate(curDate), 24 * 60 * 60 - 1);
-    }
-
     public static String getSpecifiedDateTime_month(Date curDate) {
         return getFormatDateTime(curDate, "MM.dd");
     }
 
-    // change by bbq
-    public static final String dtSimple = "yyyy-MM-dd";
-
-    private static final Object[] Date = null;
-
-    /**
-     * alahan add 20050825 获取传入时间相差的日期
-     *
-     * @param dt   传入日期，可以为空
-     * @param diff 需要获取相隔diff天的日期 如果为正则取以后的日期，否则时间往前推
-     * @return
-     */
-    public static String getDiffStringDate(Date dt, int diff) {
-        Calendar ca = Calendar.getInstance();
-
-        if (dt == null) {
-            ca.setTime(new Date());
-        } else {
-            ca.setTime(dt);
-        }
-
-        ca.add(Calendar.DATE, diff);
-        return dtSimpleFormat(ca.getTime());
-    }
-
-    /**
-     * yyyy-MM-dd
-     *
-     * @param date
-     * @return
-     */
-    public static final String dtSimpleFormat(Date date) {
-        if (date == null) {
-            return "";
-        }
-
-        return getFormat(dtSimple).format(date);
-    }
-
-    // SimpleDateFormat("yyyy-MM-dd HH:mm");
-    private static final DateFormat getFormat(String format) {
-        return new SimpleDateFormat(format);
-    }
-
     /**
      * 取得多个日期中间隔的最大天数
-     *
-     * @param startDateAndEndDate
-     * @return
-     * @author Alvise
      */
     public static int maxContinuousDays(Date[][] startDateAndEndDate) {
         // 冒泡排序
@@ -732,17 +472,6 @@ public class DateTimeUtil {
                 }
             }
         }
-
-//         for (int i = 0; i < startDateAndEndDate.length; i++) {
-//         if (startDateAndEndDate[i][0] == null)
-//         break;
-//         System.out.println(DateTimeUtil.getFormatDate(
-//         startDateAndEndDate[i][0]) + ","
-//         + DateTimeUtil.getFormatDate(startDateAndEndDate[i][1]));
-//         }
-//
-//         System.out.println(
-//         "===========================================");
 
         // 合并连续的时间段
         int j = 0;
@@ -769,13 +498,6 @@ public class DateTimeUtil {
             }
         }
 
-//         for (int i = 0; i < startDateAndEndDateNew.length; i++) {
-//            if (startDateAndEndDateNew[i][0] == null)
-//                break;
-//            System.out.println(DateTimeUtil.getFormatDate(startDateAndEndDateNew[i][0]) + ","
-//                    + DateTimeUtil.getFormatDate(startDateAndEndDateNew[i][1]));
-//        }
-
         // 选择法排序
         int maxDays = 0;
         for (int i = 0; i < startDateAndEndDateNew.length - 1; i++) {
@@ -795,10 +517,6 @@ public class DateTimeUtil {
 
     /**
      * 取得多个日期中间隔的最大天数,这里的参数是用 ","和";"分割的字符字符串例如 "2008-08-03,2008-08-04;"
-     *
-     * @param dateStr
-     * @return
-     * @author Alvise
      */
     public static int maxContinuousDays(String dateStr) {
         String[] seDate = dateStr.split(";");
@@ -806,8 +524,8 @@ public class DateTimeUtil {
 
         for (int i = 0; i < seDate.length; i++) {
             String[] tempDate = seDate[i].split(",");
-            startDateAndEndDate[i][0] = DateTimeUtil.getFormatDate(tempDate[0]);
-            startDateAndEndDate[i][1] = DateTimeUtil.getFormatDate(tempDate[1]);
+            startDateAndEndDate[i][0] = DateTimeUtil.getFormatDateTime(tempDate[0]);
+            startDateAndEndDate[i][1] = DateTimeUtil.getFormatDateTime(tempDate[1]);
         }
 
         return maxContinuousDays(startDateAndEndDate);
@@ -817,19 +535,14 @@ public class DateTimeUtil {
 
     /**
      * 判断时间段1和时间段2是否有交集
-     *
-     * @param begintimeOne
-     * @param endtimeOne
-     * @param begintimeTwo
-     * @param endtimeTwo
      * @return true:有交集,false:没有交集
      */
     public static boolean isConfilct(String begintimeOne, String endtimeOne, String begintimeTwo,
                                      String endtimeTwo) {
-        Date beginOne = getFormatDate(begintimeOne);
-        Date endOne = getFormatDate(endtimeOne);
-        Date beginTwo = getFormatDate(begintimeTwo);
-        Date endTwo = getFormatDate(endtimeTwo);
+        Date beginOne = getFormatDateTime(begintimeOne);
+        Date endOne = getFormatDateTime(endtimeOne);
+        Date beginTwo = getFormatDateTime(begintimeTwo);
+        Date endTwo = getFormatDateTime(endtimeTwo);
         if ((beginOne.compareTo(beginTwo) <= 0 && endOne.compareTo(beginTwo) >= 0)
                 || (beginOne.compareTo(endTwo) <= 0 && endOne.compareTo(endTwo) >= 0)
                 || (beginTwo.compareTo(beginOne) <= 0 && endTwo.compareTo(beginOne) >= 0)
@@ -841,7 +554,6 @@ public class DateTimeUtil {
 
     /**
      * 取得最早可购买时间
-     *
      * @param busytimes 被购买时间,格式为2008-08-06,2008-08-06;2008-08-9,2008-08-12;2008-08-14,2008-08-22;2008-09-04,2008-09-04
      * @param days      购买时长
      * @return 最高可购买时间
@@ -849,8 +561,8 @@ public class DateTimeUtil {
     public static String getCansellTime(String busytimes, int days) {
         Map<String, Integer> dayMap = new HashMap<String, Integer>();
         String[] busytimeArr = StringUtils.split(busytimes, ";");
-        for (int i = 0; i < busytimeArr.length; i++) {
-            String[] time = StringUtils.split(busytimeArr[i], ",");
+        for (String aBusytimeArr : busytimeArr) {
+            String[] time = StringUtils.split(aBusytimeArr, ",");
             Date d1 = getFormatDateTime(time[0], DATE_FORMAT);
             Date d2 = getFormatDateTime(time[1], DATE_FORMAT);
             while (d1.compareTo(d2) <= 0) {
@@ -881,44 +593,28 @@ public class DateTimeUtil {
         return getFormatDate(beginDate);
     }
 
-    public static Date getFormatDate_PAY(String dateStr, String pattern) {
-        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        try {
-            return sdf.parse(dateStr);
-        } catch (ParseException e) {
-            logger.info("to parse dateStr {} and pattern {}", new String[]{dateStr, pattern});
-            logger.error("datetime ParseException", e);
-            return null;
-        }
-    }
-
     public static boolean isWeekend(Date date) {
 
         Calendar c = getInstance();
         if (date != null) {
             c.setTime(date);
         }
-
         int dayOfWeek = c.get(DAY_OF_WEEK);
-
         return dayOfWeek == SUNDAY || dayOfWeek == SATURDAY;
     }
 
     /**
      * 计算两个日期之间的小时数，不足一小时的被舍去，d1和d2都不能为null
-     *
      * @param d1 --日期1
      * @param d2 --日期2
      * @return d1和d2之间相差的小时数
      */
     public static int minusToHours(Date d1, Date d2) {
-
         return (int) (minusToMilliSecond(d1, d2) / MILLIS_PER_HOUR);
     }
 
     /**
      * 计算两个日期之间的毫秒数，d1和d2都不能为null
-     *
      * @param d1 --日期1
      * @param d2 --日期2
      * @return d1和d2之间相差的毫秒数
@@ -926,39 +622,9 @@ public class DateTimeUtil {
     public static long minusToMilliSecond(Date d1, Date d2) {
         if (null == d1 || null == d2) {
             throw new IllegalArgumentException("d1和d2都不能为null");
-        } else {
-
         }
         return d1.getTime() - d2.getTime();
     }
-    
-    public static Date getAfterDay()
-    {
-        Calendar cal = Calendar.getInstance();
-        cal.setTime(new Date());
-        //当时时间往前扫描时间段
-        cal.add(Calendar.HOUR_OF_DAY, 1 * 24);
-        return cal.getTime();
-    }
 
-    /**
-     * 格式化日期类型为字符串，格式为yyyy-MM-dd HH:mm:ss
-     *
-     * @param dateTime 日期类型
-     * @return 时间字符串，格式为yyyy-MM-dd HH:mm:ss
-     */
-    public static String formatDateTime(Date dateTime) {
-        if (dateTime == null) {
-            return null;
-        }
-        return YYYY_MM_DD_HHMMSS.format(dateTime);
-    }
-
-
-    public static void main(String[] args) {
-//        System.out
-//                .print(maxContinuousDays("2008-08-06,2008-08-06;2008-08-06,2008-08-12;2008-09-04,2008-09-04"));
-        System.out.println(getCansellTime("", 7));
-    }
 }
 
