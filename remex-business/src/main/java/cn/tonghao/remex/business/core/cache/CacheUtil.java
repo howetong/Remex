@@ -1,12 +1,12 @@
 package cn.tonghao.remex.business.core.cache;
 
-import cn.tonghao.remex.common.util.JsonUtil;
 import cn.tonghao.remex.business.core.log.RemexLogger;
 import cn.tonghao.remex.common.util.DateTimeUtil;
+import cn.tonghao.remex.common.util.JsonUtil;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Repository;
-import redis.clients.jedis.Jedis;
-import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.ShardedJedis;
+import redis.clients.jedis.ShardedJedisPool;
 import redis.clients.jedis.exceptions.JedisConnectionException;
 import redis.clients.jedis.exceptions.JedisException;
 
@@ -19,10 +19,65 @@ public class CacheUtil {
     private static final Logger LOGGER = RemexLogger.getLogger(CacheUtil.class);
 
     @Resource
-    private JedisPool jedisPool;
+    private ShardedJedisPool jedisPool;
 
     //yyyy-MM-dd HH:mm:ss
     private static SimpleDateFormat dateFormat = new SimpleDateFormat(DateTimeUtil.TIME_FORMAT);
+
+    public boolean lock(String key) {
+        return lock(key, 10);
+    }
+
+    public boolean lock(String key, int expireTime) {
+        boolean excp = false;
+        try {
+            long lock = incr(key);
+            LOGGER.info("key {} lock times {}", key, lock);
+            return lock > 0 && lock < 2;
+        } catch (Exception e) {
+            excp = true;
+            return true;
+        } finally {
+            if (!excp) {
+                expire(key, expireTime);
+            }
+        }
+    }
+
+    /**
+     * incr操作
+     *
+     * @param key 键名
+     * @return long
+     */
+    public long incr(String key) {
+        ShardedJedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            return jedis.incr(key);
+        } catch (JedisConnectionException e) {
+            LOGGER.error("incr key {} error...", key, e);
+            broken(jedis);
+            throw e;
+        } finally {
+            release(jedis);
+        }
+    }
+
+    public void expire(String key, int seconds) {
+        ShardedJedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.expire(key, seconds);
+        } catch (JedisConnectionException e) {
+            LOGGER.error("expire key {} in {} secs error...", key, seconds, e);
+            broken(jedis);
+        } finally {
+            release(jedis);
+        }
+    }
+
+
 
     /**
      * @param key 缓存的key
@@ -38,7 +93,7 @@ public class CacheUtil {
      * @return String
      */
     public String getCache(String key) {
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             return jedis.get(key);
@@ -59,7 +114,7 @@ public class CacheUtil {
      * @param expire 有效时间
      */
     public void setCache(String key, Object value, int expire) {
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             jedis.setex(key, expire, JsonUtil.toString(value, dateFormat));
@@ -77,7 +132,7 @@ public class CacheUtil {
      * @param key
      */
     public void delCache(String key) {
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             jedis.del(key);
@@ -97,7 +152,7 @@ public class CacheUtil {
      * @param key
      */
     public Long setNxCache(String key, String value) {
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             return jedis.setnx(key, value);
@@ -111,7 +166,7 @@ public class CacheUtil {
     }
 
     public void setExpire(String key, int expire) {
-        Jedis jedis = null;
+        ShardedJedis jedis = null;
         try {
             jedis = jedisPool.getResource();
             jedis.expire(key, expire);
@@ -128,7 +183,7 @@ public class CacheUtil {
      *
      * @param jedis
      */
-    private void release(Jedis jedis) {
+    private void release(ShardedJedis jedis) {
         if (jedis != null) {
             try {
                 jedisPool.returnResource(jedis);
@@ -143,7 +198,7 @@ public class CacheUtil {
      *
      * @param jedis
      */
-    private void broken(Jedis jedis) {
+    private void broken(ShardedJedis jedis) {
         if (jedis != null) {
             try {
                 jedisPool.returnBrokenResource(jedis);

@@ -5,11 +5,17 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
     <!-- jedis -->
-    <bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+    <bean id="jedisPool" class="redis.clients.jedis.ShardedJedisPool">
         <constructor-arg index="0" ref="jedisConfig"/>
-        <constructor-arg index="1" value="${redis.host}"/>
-        <constructor-arg index="2" value="${redis.port}"/>
-        <constructor-arg index="3" value="${redis.maxWaitMillis}"/>
+        <constructor-arg index="1">
+            <list>
+                <bean class="redis.clients.jedis.JedisShardInfo">
+                    <constructor-arg index="0" value="${redis.host}"/>
+                    <constructor-arg index="1" value="${redis.port}"/>
+                    <constructor-arg index="2" value="${redis.maxWaitMillis}"/>
+                </bean>
+            </list>
+        </constructor-arg>
     </bean>
 
     <bean id="jedisConfig" class="redis.clients.jedis.JedisPoolConfig">

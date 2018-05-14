@@ -128,7 +128,7 @@ public class ConvertUtil extends BeanUtilsBean {
                                 | temp instanceof Double | temp instanceof Float | temp instanceof BigDecimal) {
                             value = temp.toString();
                         } else if (temp instanceof Date) {
-                            value = DateTimeUtil.getFormatDateTime_PAY((Date) temp);
+                            value = DateTimeUtil.getFormatDateTime((Date) temp);
                         } else if (temp instanceof Integer) {
                             value = String.valueOf(temp);
                         }

@@ -31,6 +31,7 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 
 /**
  * Http请求工具类
@@ -139,8 +140,11 @@ public class HttpClientUtils {
     public static String executePostReq(String url, String param){
         try{
             //信任所有证书
-            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, (TrustStrategy) (chain, authType) -> {
-                return true;
+            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
+                @Override
+                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
+                    return true;
+                }
             }).build();
             //设置连接工厂
             SSLConnectionSocketFactory sslFactory = new SSLConnectionSocketFactory(sslContext,new String[]{"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.2"}, null, NoopHostnameVerifier.INSTANCE);

@@ -417,6 +417,18 @@ public class DateTimeUtil {
         return cal.getTime();
     }
 
+    /**
+     * 得到日期的前或者后几分钟
+     * @param iMinutes 如果要获得前几分钟日期，该参数为负数； 如果要获得后几分钟日期，该参数为正数
+     * @return Date 返回参数<code>curDate</code>定义日期的前或者后几分钟
+     */
+    public static Date getDateBeforeOrAfterMinutes(Date curDate, int iMinutes) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(curDate);
+        cal.add(Calendar.MINUTE, iMinutes);
+        return cal.getTime();
+    }
+
     // date1加上compday天数以后的日期与当前时间比较，如果大于当前时间返回true，否则false
     public static Boolean compareDay(Date date1, int compday) {
         if (date1 == null)
