@@ -5,10 +5,10 @@ package cn.tonghao.remex.business.pay.enums;
  */
 public enum PayChannelEnum {
     Baofoo(119,"宝付"),
-    YeePay(135, "易宝"),
-    Alipay(136, "支付宝"),
-    Wechat(137, "微信"),
-    ChanPay(139, "畅捷");
+    YeePay(120, "易宝"),
+    Alipay(121, "支付宝"),
+    Wechat(122, "微信"),
+    ChanPay(123, "畅捷");
 
     private int channelId;
     private String name;

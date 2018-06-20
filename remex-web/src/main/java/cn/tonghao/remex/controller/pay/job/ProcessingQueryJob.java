@@ -9,19 +9,20 @@ import cn.tonghao.remex.business.pay.enums.PayChannelEnum;
 import cn.tonghao.remex.business.pay.enums.StandardResponseCode;
 import cn.tonghao.remex.business.pay.service.IQueryService;
 import cn.tonghao.remex.common.util.DateTimeUtil;
+import cn.tonghao.remex.common.util.JsonUtil;
 import cn.tonghao.remex.common.util.Response;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
-import net.sf.json.JSONObject;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 /**
+ * 定时查询任务
  * Created by howetong on 2018/5/8.
  */
 @Component
@@ -29,9 +30,9 @@ public class ProcessingQueryJob {
 
     private static Logger logger = RemexLogger.getLogger(ProcessingQueryJob.class);
 
-    public static final int DEFAULT_QUERY_LIMIT_NUM = 2000;
-    public static final int DEFAULT_QUERY_MINUTE_BEFORE = 1;
-    public static final int DEFAULT_QUERY_HOUR_INTERVAL = 24;
+    private static final int DEFAULT_QUERY_LIMIT_NUM = 2000;
+    private static final int DEFAULT_QUERY_MINUTE_BEFORE = 1;
+    private static final int DEFAULT_QUERY_HOUR_INTERVAL = 24;
 
     @Resource
     private IQueryService queryService;
@@ -52,22 +53,22 @@ public class ProcessingQueryJob {
         QueryJobDTO queryJobDTO = new QueryJobDTO();
         int hourInterval, minutesBeforeRequest;
         try {
-            JSONObject jsonObject = JSONObject.fromObject(jsonStr);
+            Map<String, String> map = JsonUtil.toMap(jsonStr);
             //查询的起始时间点（以当前为基准向前推）
-            hourInterval = jsonObject.getInt("hourInterval");
+            hourInterval = Integer.valueOf(map.get("hourInterval"));
             //查询的结束时间点（以当前为基准向前推）
-            minutesBeforeRequest = jsonObject.getInt("minutesBeforeRequest");
-            queryJobDTO.setChannelType(jsonObject.getInt("channelType"));
-            queryJobDTO.setRecordLimit(jsonObject.getInt("limit"));
-            String startTime = jsonObject.getString("startDate");
+            minutesBeforeRequest = Integer.valueOf(map.get("minutesBeforeRequest"));
+            queryJobDTO.setChannelType(Integer.valueOf(map.get("channelType")));
+            queryJobDTO.setRecordLimit(Integer.valueOf(map.get("limit")));
+            String startTime = map.get("startDate");
             if (StringUtils.isNoneBlank(startTime)) {
-                queryJobDTO.setStartTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(startTime));
+                queryJobDTO.setStartTime(DateTimeUtil.getFormatDateTime(startTime));
             } else {
                 queryJobDTO.setStartTime(DateTimeUtil.getDateBeforeOrAfterHours(requestTime, -1 * hourInterval));
             }
-            String endTime = jsonObject.getString("endDate");
+            String endTime = map.get("endDate");
             if (StringUtils.isNoneBlank(endTime)) {
-                queryJobDTO.setEndTime(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(endTime));
+                queryJobDTO.setEndTime(DateTimeUtil.getFormatDateTime(endTime));
             } else {
                 queryJobDTO.setEndTime(DateTimeUtil.getDateBeforeOrAfterMinutes(requestTime, -1 * minutesBeforeRequest));
             }
@@ -92,15 +93,19 @@ public class ProcessingQueryJob {
 
     private void dealWithProcessingTrade(QueryJobDTO queryJobDTO) {
         int totalPages = queryJobDTO.getTotalRecordNum() / queryJobDTO.getRecordLimit() + (queryJobDTO.getTotalRecordNum() % queryJobDTO.getRecordLimit() > 0 ? 1 : 0);
-        List<TransDetailDTO> transDetailDTOList = null;
+        List<TransDetailDTO> transDetailDTOList;
         int sucCount = 0, offSetValue = 0, totalProcessNum = 0;
         for (int pageStart = 0; pageStart < totalPages; pageStart++) {
+            //设置偏移量
             queryJobDTO.setStartRecord(offSetValue);
             logger.info("ProcessingQueryJob-dealWithProcessingTrade job start");
             transDetailDTOList = queryService.ListProcessingTrade(queryJobDTO);
-            if (!transDetailDTOList.isEmpty() && transDetailDTOList.size() > 0) {
+            if (!CollectionUtils.isEmpty(transDetailDTOList)) {
+                //分页查询中累计查询成功的记录数
                 sucCount = dealWithProcessTradeList(transDetailDTOList, sucCount);
+                //分页查询中累计查询过的记录数
                 totalProcessNum += transDetailDTOList.size();
+                //分页查询中累计查询失败的记录数，作为下一次的偏移量
                 offSetValue = totalProcessNum - sucCount;
             }
             logger.info("ProcessingQueryJob-queryProcessingTranDetail job #[{}] end, deal with [{}] records,[{}] records have done,[{}]records are processing.",
@@ -113,8 +118,7 @@ public class ProcessingQueryJob {
 
     private int dealWithProcessTradeList(List<TransDetailDTO> transDetailDTOList, int sucCount) {
         for (TransDetailDTO transDetailDTO : transDetailDTOList) {
-            logger.info("ProcessingQueryJob-dealWithProcessTradeList 开始处理记录out_trade_no[{}]",
-                    transDetailDTO.getOutTradeNo());
+            logger.info("ProcessingQueryJob-dealWithProcessTradeList 开始处理记录out_trade_no[{}]", transDetailDTO.getOutTradeNo());
             Boolean lock = Boolean.TRUE;
             String cacheKey = CacheEnum.CASHIER_DICTIONARY_CODE.getKey(transDetailDTO.getOutTradeNo());
             if(!cacheUtil.lock(cacheKey)) {

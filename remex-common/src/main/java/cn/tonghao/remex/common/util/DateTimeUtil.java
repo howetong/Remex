@@ -51,9 +51,27 @@ public class DateTimeUtil {
      */
     private static final long MILLIS_PER_HOUR = 60 * MILLIS_PER_MINUTE;
 
-    private static ThreadLocal<SimpleDateFormat> localFormatter = new ThreadLocal<>();
+    private static ThreadLocal<Map<String, SimpleDateFormat>> localFormatter = new ThreadLocal<>();
 
+    /**
+     * 获取解析特定时间格式的 SimpleDateFormat
+     * @param pattern 时间格式
+     */
+    private static SimpleDateFormat getDateFormat(String pattern) {
+        Map<String, SimpleDateFormat> strDateFormatMap = localFormatter.get();
 
+        if (strDateFormatMap == null) {
+            strDateFormatMap = new HashMap<>();
+        }
+
+        SimpleDateFormat simpleDateFormat = strDateFormatMap.get(pattern);
+        if (simpleDateFormat == null) {
+            simpleDateFormat = new SimpleDateFormat(pattern, Locale.getDefault());
+            strDateFormatMap.put(pattern, simpleDateFormat);
+            localFormatter.set(strDateFormatMap);
+        }
+        return simpleDateFormat;
+    }
 
     /**
      * 取得当前系统时间戳
@@ -186,7 +204,7 @@ public class DateTimeUtil {
         if (currDate == null) {
             return "";
         }
-        SimpleDateFormat dtFormatdB = localFormatter.get();
+        SimpleDateFormat dtFormatdB = getDateFormat(format);
         if (dtFormatdB == null) {
             dtFormatdB = new SimpleDateFormat(format);
         }
@@ -208,7 +226,7 @@ public class DateTimeUtil {
         if (currDate == null) {
             return null;
         }
-        SimpleDateFormat dtFormatdB = localFormatter.get();
+        SimpleDateFormat dtFormatdB = getDateFormat(format);
         if (dtFormatdB == null) {
             dtFormatdB = new SimpleDateFormat(format);
         }
