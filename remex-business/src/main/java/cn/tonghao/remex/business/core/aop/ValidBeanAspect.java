@@ -15,15 +15,13 @@ import java.util.List;
  */
 @Component
 @Aspect
-public class ValidBeanAcpect {
+public class ValidBeanAspect {
 
     @Before("@annotation(cn.tonghao.remex.business.core.annotation.BeanValid)")
     public void checkBeanValid(JoinPoint joinPoint) throws Exception{
         List<Object> args = Arrays.asList(joinPoint.getArgs());
         try {
-            args.stream().forEach((Object obj) -> {
-                DataValidationUtil.validate(obj);
-            });
+            args.stream().forEach(DataValidationUtil::validate);
         } catch (RuntimeException e) {
             throw new BusinessException(ErrorCodeDefinition.INVALID_PARAMETER, "参数不合法," + e.getMessage());
         }
