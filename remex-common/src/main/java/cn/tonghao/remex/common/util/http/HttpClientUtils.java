@@ -1,14 +1,9 @@
 package cn.tonghao.remex.common.util.http;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.config.Registry;
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.socket.PlainConnectionSocketFactory;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
@@ -31,10 +26,10 @@ import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
-import java.security.cert.X509Certificate;
 
 /**
  * Http请求工具类
+ * 此类提供通过HttpClient方式发送http和https请求
  * Created by tonghao on 2017/5/8.
  */
 public class HttpClientUtils {
@@ -45,7 +40,7 @@ public class HttpClientUtils {
 
     private static PoolingHttpClientConnectionManager connMgr = null;
 
-    static{
+    static {
         connMgr = new PoolingHttpClientConnectionManager();
         // 设置连接池大小
         connMgr.setMaxTotal(100);
@@ -140,12 +135,7 @@ public class HttpClientUtils {
     public static String executePostReq(String url, String param){
         try{
             //信任所有证书
-            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, new TrustStrategy() {
-                @Override
-                public boolean isTrusted(X509Certificate[] chain, String authType) throws CertificateException {
-                    return true;
-                }
-            }).build();
+            SSLContext sslContext = SSLContexts.custom().loadTrustMaterial(null, (TrustStrategy) (chain, authType) -> true).build();
             //设置连接工厂
             SSLConnectionSocketFactory sslFactory = new SSLConnectionSocketFactory(sslContext,new String[]{"SSLv2Hello", "SSLv3", "TLSv1", "TLSv1.2"}, null, NoopHostnameVerifier.INSTANCE);
 

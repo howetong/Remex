@@ -1,6 +1,7 @@
 package cn.tonghao.remex.business.pay.enums;
 
 /**
+ * 渠道枚举类
  * Created by howetong on 2018/3/2.
  */
 public enum PayChannelEnum {

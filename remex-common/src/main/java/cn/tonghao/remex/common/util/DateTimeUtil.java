@@ -317,10 +317,10 @@ public class DateTimeUtil {
     /**
      * 获取昨天日期
      */
-    public static String getDateBeforeDay() {
+    public static String getDateBeforeDay(String format) {
         Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DAY_OF_YEAR, -1);
-        return getFormatDateTime(cal.getTime(), DATE_FORMAT);
+        return getFormatDateTime(cal.getTime(), format);
     }
 
     /**

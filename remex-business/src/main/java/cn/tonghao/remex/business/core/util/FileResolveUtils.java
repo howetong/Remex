@@ -9,14 +9,15 @@ import java.io.*;
 import java.util.regex.Pattern;
 
 /**
+ * 文件解析工具
  * Created by howetong on 2018/3/23.
  */
-public class FileResloveUtils {
+public class FileResolveUtils {
 
-    private static Logger logger = RemexLogger.getLogger(FileResloveUtils.class);
+    private static Logger logger = RemexLogger.getLogger(FileResolveUtils.class);
 
     //将path路径下的zip格式账单转换为能通过excel打开的csv格式
-    private void dealWithBill(String path) {
+    public static void dealWithBill(String path) {
         try{
             File[] files = CompressUtil.unzip(path, null);
             for (File file : files) {
@@ -28,7 +29,7 @@ public class FileResloveUtils {
         }
     }
 
-    public static void readCSVFile(File file, String outPutFile){
+    private static void readCSVFile(File file, String outPutFile){
         try {
             String encoding="utf-8";
             if(file.isFile() && file.exists()){ //判断文件是否存在
