@@ -3,13 +3,18 @@ package cn.tonghao.remex.controller.pay.api;
 import cn.tonghao.remex.business.core.drools.dto.Book;
 import cn.tonghao.remex.business.core.drools.service.BookService;
 import cn.tonghao.remex.common.util.DefaultKeyGenerator;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 测试控制器
@@ -26,6 +31,23 @@ public class TestController {
     @ResponseBody
     public String sayHello(){
         return "hello";
+    }
+
+    @RequestMapping("/hystrix")
+    @HystrixCommand(groupKey = "myGroup", commandKey = "myCommand", fallbackMethod = "fallback",
+            commandProperties = {
+                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "50"),//方法执行超时时间
+                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "10"),//当并发错误个数达到此阀值时(在时间窗口内)，触发隔断器
+                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "60000"),//滚动窗口时间长度
+                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "12"),//滚动窗口的桶数
+                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "60000"),//隔断器被触发后，睡眠多长时间开始重试请求
+            },
+            threadPoolProperties = {
+                    @HystrixProperty(name = "coreSize", value = "20"),
+                    @HystrixProperty(name = "maxQueueSize", value = "100"),
+            })
+    public void testHystrix(){
+        hystrix();
     }
 
 
@@ -79,6 +101,18 @@ public class TestController {
                 System.out.println(temp);
             }
             System.out.println(temp);
+        }
+    }
+
+    private void hystrix() {
+        System.out.println(Thread.currentThread().getName());
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        for (int i = 0; i < 100; i++) {
+            System.out.println(i);
         }
     }
 
