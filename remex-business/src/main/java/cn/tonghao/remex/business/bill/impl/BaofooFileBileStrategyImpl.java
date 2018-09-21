@@ -85,10 +85,10 @@ public class BaofooFileBileStrategyImpl extends CommonFileBillStrategy implement
     }
 
 
-    private Map<String, String> buildBillInfParam(String parterId, String type) {
+    private Map<String, String> buildBillInfParam(String partnerId, String type) {
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("version", VERSION);
-        paramMap.put("member_id", parterId);
+        paramMap.put("member_id", partnerId);
         paramMap.put("file_type", type); //fi 收款  fo 放款
         paramMap.put("client_ip", CLINET_IP);
         paramMap.put("settle_date", DateTimeUtil.getDateBeforeDay("yyyy-MM-dd"));

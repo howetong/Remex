@@ -345,61 +345,14 @@
 
     </dependencies>
 
-    <profiles>
-        <profile>
-            <id>dev</id>
-            <properties>
-                <profile.path>config/resource/dev</profile.path>
-            </properties>
-        </profile>
-        <profile>
-            <id>sit</id>
-            <properties>
-                <profile.path>config/resource/sit</profile.path>
-            </properties>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-        </profile>
-        <profile>
-            <id>product</id>
-            <properties>
-                <profile.path>config/resource/prd</profile.path>
-            </properties>
-        </profile>
-    </profiles>
-
     <build>
-        <resources>
-            <resource>
-                <directory>src/main/resources/${profile.path}</directory>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources/config/resource</directory>
-                <includes>
-                    <include>application.properties</include>
-                </includes>
-                <filtering>true</filtering>
-            </resource>
-            <resource>
-                <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/dev/*</exclude>
-                    <exclude>**/sit/*</exclude>
-                    <exclude>**/prd/*</exclude>
-                </excludes>
-                <filtering>true</filtering>
-            </resource>
-        </resources>
-
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java_source_version}</source>
+                    <target>${java_target_version}</target>
                 </configuration>
             </plugin>
         </plugins>
