@@ -14,7 +14,7 @@
 
     <!--aspectJ代理-->
     <aop:aspectj-autoproxy proxy-target-class="true" />
-    <!--<bean id="hystrixAspect" class="com.netflix.hystrix.contrib.javanica.aop.aspectj.HystrixCommandAspect"/>-->
+    <bean id="hystrixAspect" class="com.netflix.hystrix.contrib.javanica.aop.aspectj.HystrixCommandAspect"/>
 
     <!--线程池-->
     <bean id="multiThreadExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">

@@ -22,7 +22,7 @@
     <!-- send -->
     <bean id="poolSendConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
         <property name="connectionFactory" ref="commonFactory"/>
-        <property name="maximumActive" value="1"/>
+        <property name="maximumActiveSessionPerConnection" value="1"/>
     </bean>
 
     <bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
