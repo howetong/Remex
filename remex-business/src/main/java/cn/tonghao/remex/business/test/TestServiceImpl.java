@@ -2,9 +2,6 @@ package cn.tonghao.remex.business.test;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
-import org.apache.poi.ss.formula.functions.T;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -12,7 +9,7 @@ import org.springframework.stereotype.Service;
  * Created by howetong on 2018/9/28.
  */
 @Service
-public class TestService {
+public class TestServiceImpl implements ITestService {
 
     @HystrixCommand(groupKey = "AnnotationHystrixInvoke", commandKey = "getInfo", fallbackMethod = "getFallback",
             commandProperties = {
@@ -21,6 +18,8 @@ public class TestService {
                     @HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "50")
             }
     )
+
+    @Override
     public String getInfo() {
         System.out.println(Thread.currentThread().getName() + "开始执行getInfo");
         try {

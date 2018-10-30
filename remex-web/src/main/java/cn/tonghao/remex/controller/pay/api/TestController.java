@@ -2,7 +2,6 @@ package cn.tonghao.remex.controller.pay.api;
 
 import cn.tonghao.remex.business.core.drools.dto.Book;
 import cn.tonghao.remex.business.core.drools.service.BookService;
-import cn.tonghao.remex.common.util.DefaultKeyGenerator;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import org.springframework.stereotype.Controller;
@@ -11,9 +10,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,6 +29,7 @@ public class TestController {
     public String sayHello(){
         return "hello";
     }
+
 
     @RequestMapping("/hystrix")
     @HystrixCommand(groupKey = "myGroup", commandKey = "myCommand", fallbackMethod = "fallback",
@@ -87,22 +85,6 @@ public class TestController {
         return sb.toString();
     }
 
-
-    public static void main(String[] args) {
-        DefaultKeyGenerator defaultKeyGenerator = DefaultKeyGenerator.getInstance();
-        List<String> arrayList = new ArrayList<>();
-        for (int i = 0; i < 1800; i++) {
-            arrayList.add(defaultKeyGenerator.generateUniqueId("1001", "00"));
-        }
-        for (int i = 0; i < arrayList.size() - 1; i++) {
-            String temp = arrayList.get(i);
-            String next = arrayList.get(i + 1);
-            if (temp.equals(next)) {
-                System.out.println(temp);
-            }
-            System.out.println(temp);
-        }
-    }
 
     private void hystrix() {
         System.out.println(Thread.currentThread().getName());

@@ -8,9 +8,9 @@ import cn.tonghao.remex.common.util.DateTimeUtil;
 import cn.tonghao.remex.common.util.http.HttpsURLConnUtils;
 import org.slf4j.Logger;
 import org.springframework.stereotype.Service;
-import sun.misc.BASE64Decoder;
 
 import java.io.*;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,9 +25,9 @@ public class BaofooFileBileStrategyImpl extends CommonFileBillStrategy implement
 
     public static final String VERSION = "4.0.0.2";
 
-    private static final String CLINET_IP = "211.148.24.228";
+    private static final String CLIENT_IP = "211.148.24.228";
 
-    private static final String channelName = "baofoo"; //渠道名作为文件子目录
+    private static final String CHANNEL_NAME = "baofoo"; //渠道名作为文件子目录
 
     private static final String API_URL = "https://vgw.baofoo.com/boas/api/fileLoadNewRequest";
 
@@ -37,7 +37,7 @@ public class BaofooFileBileStrategyImpl extends CommonFileBillStrategy implement
             //当前日期前一天
             String date = DateTimeUtil.getDateBeforeDay("yyyyMMdd");
             //本地文件保存路径
-            String filePath = System.getProperty("catalina.base") + File.separator + channelName + File.separator + date;
+            String filePath = System.getProperty("catalina.base") + File.separator + CHANNEL_NAME + File.separator + date;
             //对账文件下载到本地
             logger.info("开始从宝付渠道下载前一天的对账文件");
             for (PartnerIdEnum partnerIdEnum : PartnerIdEnum.values()) {
@@ -50,9 +50,9 @@ public class BaofooFileBileStrategyImpl extends CommonFileBillStrategy implement
                 }
                 String[] splitStr = responseStr.split("=");    //解板返回的文件参数
                 //进行base64解码
-                byte[] fileBytes = new BASE64Decoder().decodeBuffer(splitStr[3]);
+                byte[] fileBytes = Base64.getDecoder().decode(splitStr[3]);
 
-                String fileName = channelName + "-" + partnerIdEnum.getType() + "-" + partnerId + "-" + date;
+                String fileName = CHANNEL_NAME + "-" + partnerIdEnum.getType() + "-" + partnerId + "-" + date;
                 File fileDir = new File(filePath);
                 if (!fileDir.exists()) {
                     //noinspection ResultOfMethodCallIgnored
@@ -60,25 +60,20 @@ public class BaofooFileBileStrategyImpl extends CommonFileBillStrategy implement
                 }
                 BufferedInputStream bis = new BufferedInputStream(new ByteArrayInputStream(fileBytes));
                 String path = filePath + File.separator + fileName + ".zip";
-                BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(path));
-                int len = 2048;
-                byte[] b = new byte[len];
-                while ((len = bis.read(b)) != -1) {
-                    bos.write(b, 0, len);
-                }
-                bos.flush();
-                try {
-                    bis.close();
-                    bos.close();
-                } catch (IOException ioe) {
-                    logger.warn("io流关闭异常");
+                try (BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(path))) {
+                    int len = 2048;
+                    byte[] b = new byte[len];
+                    while ((len = bis.read(b)) != -1) {
+                        bos.write(b, 0, len);
+                    }
+                    bos.flush();
                 }
                 logger.info("商户号{}文件对账单下载成功", partnerId);
                 // 文件解析
                 FileResolveUtils.dealWithBill(path);
             }
             //文件上传至sftp服务器
-            uploadFiles(filePath, channelName);
+            uploadFiles(filePath, CHANNEL_NAME);
         } catch (Exception e) {
             logger.error("下载文件对账单失败！原因是：{}", e.getMessage());
         }
@@ -90,7 +85,7 @@ public class BaofooFileBileStrategyImpl extends CommonFileBillStrategy implement
         paramMap.put("version", VERSION);
         paramMap.put("member_id", partnerId);
         paramMap.put("file_type", type); //fi 收款  fo 放款
-        paramMap.put("client_ip", CLINET_IP);
+        paramMap.put("client_ip", CLIENT_IP);
         paramMap.put("settle_date", DateTimeUtil.getDateBeforeDay("yyyy-MM-dd"));
         return paramMap;
     }
@@ -115,16 +110,8 @@ public class BaofooFileBileStrategyImpl extends CommonFileBillStrategy implement
             return id;
         }
 
-        public void setId(String id) {
-            this.id = id;
-        }
-
         public String getType() {
             return type;
-        }
-
-        public void setType(String type) {
-            this.type = type;
         }
     }
 }

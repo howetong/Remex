@@ -1,12 +1,11 @@
 package cn.tonghao.component.hystrixlearn;
 
-import cn.tonghao.remex.business.test.TestService;
+import cn.tonghao.remex.business.test.ITestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.annotation.Resource;
 
 /**
  * hystrix注解
@@ -20,8 +19,8 @@ import javax.annotation.Resource;
 })
 public class AnnotationHystrixInvoke {
 
-    @Resource
-    private TestService testService;
+    @Autowired(required = false)
+    private ITestService testService;
 
     @Test
     public void invoke() throws Exception{
