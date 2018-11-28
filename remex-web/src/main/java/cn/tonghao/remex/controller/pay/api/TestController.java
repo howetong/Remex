@@ -2,14 +2,15 @@ package cn.tonghao.remex.controller.pay.api;
 
 import cn.tonghao.remex.business.core.drools.dto.Book;
 import cn.tonghao.remex.business.core.drools.service.BookService;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -21,9 +22,12 @@ import java.util.Set;
 @RequestMapping("/test")
 public class TestController {
 
+    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
+
     @Resource
     private BookService bookService;
 
+    // Basic test
     @RequestMapping("/")
     @ResponseBody
     public String sayHello(){
@@ -31,25 +35,8 @@ public class TestController {
     }
 
 
-    @RequestMapping("/hystrix")
-    @HystrixCommand(groupKey = "myGroup", commandKey = "myCommand", fallbackMethod = "fallback",
-            commandProperties = {
-                    @HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "50"),//方法执行超时时间
-                    @HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "10"),//当并发错误个数达到此阀值时(在时间窗口内)，触发隔断器
-                    @HystrixProperty(name = "metrics.rollingStats.timeInMilliseconds", value = "60000"),//滚动窗口时间长度
-                    @HystrixProperty(name = "metrics.rollingStats.numBuckets", value = "12"),//滚动窗口的桶数
-                    @HystrixProperty(name = "circuitBreaker.sleepWindowInMilliseconds", value = "60000"),//隔断器被触发后，睡眠多长时间开始重试请求
-            },
-            threadPoolProperties = {
-                    @HystrixProperty(name = "coreSize", value = "20"),
-                    @HystrixProperty(name = "maxQueueSize", value = "100"),
-            })
-    public void testHystrix(){
-        hystrix();
-    }
 
-
-
+    // Drool test
     @RequestMapping(value = "/order")
     @ResponseBody
     public String orderBook(HttpServletRequest request){
@@ -85,17 +72,9 @@ public class TestController {
         return sb.toString();
     }
 
-
-    private void hystrix() {
-        System.out.println(Thread.currentThread().getName());
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        for (int i = 0; i < 100; i++) {
-            System.out.println(i);
-        }
+    public static void main(String[] args) throws Exception {
+        String key = "0.00";
+        BigDecimal a = new BigDecimal(key);
+        System.out.println(a.compareTo(BigDecimal.ZERO) == 0);
     }
-
 }

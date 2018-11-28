@@ -19,7 +19,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 })
 public class AnnotationHystrixInvoke {
 
-    @Autowired(required = false)
+    @Autowired
     private ITestService testService;
 
     @Test
@@ -30,4 +30,4 @@ public class AnnotationHystrixInvoke {
         }
     }
 
-    }
+}

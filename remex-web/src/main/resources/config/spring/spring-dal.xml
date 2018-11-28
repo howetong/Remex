@@ -14,7 +14,7 @@
         </property>
     </bean>
 
-   <!-- <bean class="cn.tonghao.remex.common.properties.config.ExtPropertyPlaceholderConfigurer">
+    <!--<bean class="cn.tonghao.remex.business.core.properties.config.ExtPropertyPlaceholderConfigurer">
         <property name="properties">
             <list>
                 <value>settings</value>
@@ -22,7 +22,7 @@
         </property>
         <property name="placeholderPrefix" value="@{"/>
         <property name="systemPropertiesModeName" value="SYSTEM_PROPERTIES_MODE_OVERRIDE"/>
-        <property name="ds" ref="dataSource_remex"></property>
+        <property name="ds" ref="dataSourceMaster"></property>
     </bean>-->
 
 
