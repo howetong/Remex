@@ -2,6 +2,7 @@ package cn.tonghao.remex.controller.pay.api;
 
 import cn.tonghao.remex.business.core.drools.dto.Book;
 import cn.tonghao.remex.business.core.drools.service.BookService;
+import cn.tonghao.remex.common.util.IdWorker;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -73,8 +74,7 @@ public class TestController {
     }
 
     public static void main(String[] args) throws Exception {
-        String key = "0.00";
-        BigDecimal a = new BigDecimal(key);
-        System.out.println(a.compareTo(BigDecimal.ZERO) == 0);
+        IdWorker idWorker = new IdWorker(12, 12);
+        System.out.println(String.valueOf(idWorker.nextId()).length());
     }
 }
