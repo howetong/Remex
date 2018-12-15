@@ -1,4 +1,4 @@
-package cn.tonghao.remex.controller.pay.api;
+package cn.tonghao.remex.controller.pay.test;
 
 import cn.tonghao.remex.business.core.drools.dto.Book;
 import cn.tonghao.remex.business.core.drools.service.BookService;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 

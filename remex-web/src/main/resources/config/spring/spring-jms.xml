@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd">
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:jms="http://www.springframework.org/schema/jms"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms.xsd">
+
+
     <!-- broker -->
     <bean id="commonFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
         <property name="brokerURL"
@@ -35,6 +38,14 @@
         <property name="explicitQosEnabled" value="true"/>
         <property name="timeToLive" value="604800000"/>
     </bean>
+
+    <!--增加前置扣费的消费者-->
+    <bean id="testConsumer" class="cn.tonghao.remex.business.test.TestJMSConsumer"/>
+
+    <jms:listener-container connection-factory="jmsPayConnectionFactory" destination-type="queue" concurrency="6-20">
+        <!--增加前置扣费的消费者-->
+        <jms:listener destination="${queue.remex.test.task}" ref="testConsumer" method="onMessage" />
+    </jms:listener-container>
 
 
 </beans>
