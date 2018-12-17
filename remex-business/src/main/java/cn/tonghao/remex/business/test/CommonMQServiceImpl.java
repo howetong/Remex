@@ -1,15 +1,10 @@
 package cn.tonghao.remex.business.test;
 
-import cn.tonghao.remex.common.util.HideSensitiveUtil;
 import cn.tonghao.remex.common.util.JsonUtil;
 import org.springframework.jms.core.JmsTemplate;
-import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import javax.jms.JMSException;
-import javax.jms.Message;
-import javax.jms.Session;
 
 /**
  * @author howetong
@@ -23,12 +18,7 @@ public class CommonMQServiceImpl implements ICommonMQService {
     public void sendMsg(String queueName, Object data) {
         try {
             final String msg = JsonUtil.toString(data);
-            jmsTemplate.send(queueName, new MessageCreator() {
-                @Override
-                public Message createMessage(Session session) throws JMSException {
-                    return session.createTextMessage(msg);
-                }
-            });
+            jmsTemplate.send(queueName, session -> session.createTextMessage(msg));
         } catch (Exception e) {
             e.printStackTrace();
         }

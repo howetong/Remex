@@ -17,11 +17,6 @@
         <property name="connectionFactory" ref="commonFactory"/>
     </bean>
 
-    <!-- consumer2 -->
-    <bean id="jmsPayConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
-        <property name="connectionFactory" ref="commonFactory"/>
-    </bean>
-
     <!-- send -->
     <bean id="poolSendConnectionFactory" class="org.apache.activemq.pool.PooledConnectionFactory">
         <property name="connectionFactory" ref="commonFactory"/>
@@ -39,12 +34,11 @@
         <property name="timeToLive" value="604800000"/>
     </bean>
 
-    <!--增加前置扣费的消费者-->
     <bean id="testConsumer" class="cn.tonghao.remex.business.test.TestJMSConsumer"/>
 
-    <jms:listener-container connection-factory="jmsPayConnectionFactory" destination-type="queue" concurrency="6-20">
-        <!--增加前置扣费的消费者-->
-        <jms:listener destination="${queue.remex.test.task}" ref="testConsumer" method="onMessage" />
+    <jms:listener-container connection-factory="jmsConnectionFactory" destination-type="queue" concurrency="6-20">
+        <!--增加测试的消费者-->
+        <jms:listener destination="${mq.queue.testName}" ref="testConsumer" method="onMessage" />
     </jms:listener-container>
 
 
