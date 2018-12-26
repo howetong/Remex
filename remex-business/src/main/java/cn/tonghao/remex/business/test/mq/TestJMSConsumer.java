@@ -1,4 +1,4 @@
-package cn.tonghao.remex.business.test;
+package cn.tonghao.remex.business.test.mq;
 
 import cn.tonghao.remex.business.core.log.RemexLogger;
 import org.slf4j.Logger;
@@ -20,9 +20,9 @@ public class TestJMSConsumer implements MessageListener {
     public void onMessage(Message message) {
         if (message instanceof TextMessage) {
             try {
-                log.info("收到业务消息:{}", ((TextMessage) message).getText());
-                String msg = ((TextMessage) message).getText();
-                System.out.println(msg);
+                TextMessage textMessage = (TextMessage) message;
+                log.info("收到业务消息:{}, 是否重发：{}", textMessage.getText(), textMessage.getJMSRedelivered());
+                throw new RuntimeException("test");
             } catch (JMSException e) {
                 log.warn("消息转换异常：{}", e);
             }

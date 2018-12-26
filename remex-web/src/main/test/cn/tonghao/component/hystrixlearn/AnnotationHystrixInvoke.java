@@ -1,6 +1,6 @@
 package cn.tonghao.component.hystrixlearn;
 
-import cn.tonghao.remex.business.test.ITestService;
+import cn.tonghao.remex.business.test.hystrix.ITestService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

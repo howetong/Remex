@@ -1,4 +1,4 @@
-package cn.tonghao.remex.business.test;
+package cn.tonghao.remex.business.test.hystrix;
 
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;

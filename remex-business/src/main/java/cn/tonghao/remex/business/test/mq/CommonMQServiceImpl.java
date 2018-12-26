@@ -1,4 +1,4 @@
-package cn.tonghao.remex.business.test;
+package cn.tonghao.remex.business.test.mq;
 
 import cn.tonghao.remex.common.util.JsonUtil;
 import org.springframework.jms.core.JmsTemplate;

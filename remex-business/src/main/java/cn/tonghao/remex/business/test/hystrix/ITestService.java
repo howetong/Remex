@@ -1,4 +1,4 @@
-package cn.tonghao.remex.business.test;
+package cn.tonghao.remex.business.test.hystrix;
 
 /**
  * @author howetong
