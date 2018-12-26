@@ -1,6 +1,6 @@
 package cn.tonghao.remex.controller.pay.test;
 
-import cn.tonghao.remex.business.test.ICommonMQService;
+import cn.tonghao.remex.business.test.mq.ICommonMQService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

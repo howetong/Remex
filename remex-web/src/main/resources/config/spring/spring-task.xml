@@ -3,18 +3,18 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="jobClass" class="cn.tonghao.remex.business.core.task.TaskTest"></bean>
+    <bean id="jobClass" class="cn.tonghao.remex.business.core.task.TaskTest"/>
 
     <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
-        <property name="targetObject" ref="jobClass"></property>
-        <property name="targetMethod" value="execute"></property>
-        <property name="concurrent" value="false"></property>
+        <property name="targetObject" ref="jobClass"/>
+        <property name="targetMethod" value="execute"/>
+        <property name="concurrent" value="false"/>
     </bean>
 
     <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
-        <property name="jobDetail" ref="jobDetail"></property>
-        <property name="startDelay" value="3000"></property>
-        <property name="cronExpression" value="0/30 * * * * ?"></property>
+        <property name="jobDetail" ref="jobDetail"/>
+        <property name="startDelay" value="3000"/>
+        <property name="cronExpression" value="0 0/2 * * * ?"/>
     </bean>
 
     <bean id="startQuartz" lazy-init="false" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
@@ -22,7 +22,7 @@
         <!--<property name="jobFactory" ref="jobFactory"></property>-->
         <property name="triggers">
             <list>
-                <ref bean="cronTrigger"></ref>
+                <ref bean="cronTrigger"/>
             </list>
         </property>
     </bean>
