@@ -1,6 +1,6 @@
 package cn.tonghao.remex.business.pay.dto.cashier;
 
-import cn.tonghao.remex.business.core.aop.ObjectNotNull;
+import cn.tonghao.remex.business.core.annotation.ObjectNotNull;
 import org.hibernate.validator.constraints.NotBlank;
 
 import javax.validation.constraints.NotNull;

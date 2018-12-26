@@ -1,10 +1,10 @@
-package cn.tonghao.remex.controller.pay.api;
+package cn.tonghao.remex.controller.pay.test;
 
-import cn.tonghao.remex.business.bill.CommonFileBillStrategy;
-import cn.tonghao.remex.business.bill.IChannelFileBillStrategy;
 import cn.tonghao.remex.business.core.drools.dto.Book;
 import cn.tonghao.remex.business.core.drools.service.BookService;
-import org.springframework.beans.factory.annotation.Autowired;
+import cn.tonghao.remex.common.util.IdWorker;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -15,29 +15,28 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * 测试控制器
  * Created by howetong on 2018/1/11.
  */
 @Controller
+@RequestMapping("/test")
 public class TestController {
 
-    @Autowired
-    private BookService bookService;
+    private static final Logger logger = LoggerFactory.getLogger(TestController.class);
 
     @Resource
-    private IChannelFileBillStrategy channelFileBillStrategy;
+    private BookService bookService;
 
-    @RequestMapping("/test")
+    // Basic test
+    @RequestMapping("/")
     @ResponseBody
     public String sayHello(){
         return "hello";
     }
 
-    @RequestMapping("/testBill")
-    public void getBill(){
-        channelFileBillStrategy.getFillBill();
-    }
 
 
+    // Drool test
     @RequestMapping(value = "/order")
     @ResponseBody
     public String orderBook(HttpServletRequest request){
@@ -60,7 +59,7 @@ public class TestController {
         b.setName("Java核心思想");
         b.setBasePrice(52);
         b.setDiscount("0.92");
-        Set routeSet = new HashSet();
+        Set<String> routeSet = new HashSet<>();
         routeSet.add("fright");
         routeSet.add("discount");
         b.setRouteFactors(routeSet);
@@ -68,10 +67,13 @@ public class TestController {
         StringBuilder sb = new StringBuilder();
         for (String supplier : suppliers) {
             System.out.println(supplier);
-            sb.append(supplier + ",");
+            sb.append(supplier).append(",");
         }
         return sb.toString();
     }
 
-
+    public static void main(String[] args) throws Exception {
+        IdWorker idWorker = new IdWorker(12, 12);
+        System.out.println(String.valueOf(idWorker.nextId()).length());
+    }
 }

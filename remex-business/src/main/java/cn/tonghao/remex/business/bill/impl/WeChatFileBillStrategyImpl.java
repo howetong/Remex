@@ -1,13 +1,10 @@
 package cn.tonghao.remex.business.bill.impl;
 
-/**
- * Created by howetong on 2018/2/12.
- */
-
 import cn.tonghao.remex.business.bill.CommonFileBillStrategy;
 import cn.tonghao.remex.business.bill.IChannelFileBillStrategy;
 import cn.tonghao.remex.business.core.log.RemexLogger;
 import cn.tonghao.remex.business.pay.util.WechatPayUtil;
+import cn.tonghao.remex.common.util.DateTimeUtil;
 import cn.tonghao.remex.common.util.http.HttpClientUtils;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,16 +38,12 @@ public class WeChatFileBillStrategyImpl extends CommonFileBillStrategy implement
     public void getFillBill() {
         try {
             //当前日期前一天
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date());
-            calendar.add(Calendar.DAY_OF_MONTH, -1);
-            Date dBefore = calendar.getTime();
-            String date = new SimpleDateFormat("yyyyMMdd").format(dBefore);
+            String date = DateTimeUtil.getDateBeforeDay("yyyyMMdd");
             //本地文件保存路径
             String filePath = System.getProperty("catalina.base") + File.separator + channelName + File.separator + date;
             logger.info("开始从微信渠道下载前一天的对账文件");
             for (PartnerEnum partnerEnum : PartnerEnum.values()) {
-                String parterId = partnerEnum.getParterId();
+                String parterId = partnerEnum.getPartnerId();
                 String appId = partnerEnum.getAppId();
                 Map<String, String> requestParam = buildBillInfParam(parterId, appId);
                 String xmlData = WechatPayUtil.map2Xml(requestParam);
@@ -91,7 +84,7 @@ public class WeChatFileBillStrategyImpl extends CommonFileBillStrategy implement
     }
 
     private Map<String, String> buildBillInfParam(String parterId, String appId) {
-        Map<String, String> paremMap = new HashMap<String, String>();
+        Map<String, String> paremMap = new HashMap<>();
         paremMap.put("appid", appId);
         paremMap.put("mch_id", parterId);
         paremMap.put("nonce_str", WechatPayUtil.genNonceString());
@@ -108,31 +101,24 @@ public class WeChatFileBillStrategyImpl extends CommonFileBillStrategy implement
 
     public enum PartnerEnum {
 
-        PARTER1("1495297853", "wg5fbhbb3j5bf4479e");
+        PARTNER1("1495297853", "wg5fbhbb3j5bf4479e");
 
         PartnerEnum(String parterId, String appId) {
-            this.parterId = parterId;
+            this.partnerId = parterId;
             this.appId = appId;
         }
 
-        private String parterId;
+        private String partnerId;
         private String appId;
 
-        public String getParterId() {
-            return parterId;
-        }
-
-        public void setParterId(String parterId) {
-            this.parterId = parterId;
+        public String getPartnerId() {
+            return partnerId;
         }
 
         public String getAppId() {
             return appId;
         }
 
-        public void setAppId(String appId) {
-            this.appId = appId;
-        }
     }
 
 }

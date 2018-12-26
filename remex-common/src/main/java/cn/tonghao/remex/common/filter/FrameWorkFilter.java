@@ -1,14 +1,11 @@
 package cn.tonghao.remex.common.filter;
 
-import cn.tonghao.remex.common.exception.BusinessException;
 import cn.tonghao.remex.common.exception.RestErrorCodeException;
 import cn.tonghao.remex.common.method.FailData;
 import cn.tonghao.remex.common.method.impl.ReReadableResponseWrapper;
 import cn.tonghao.remex.common.util.Base64JsonHttpMessageConverter;
-import com.fasterxml.jackson.core.JsonParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.HttpMessageNotWritableException;
@@ -27,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 框架通用过滤器,解决跨域请求
  * Created by howetong on 2017/7/11.
  */
 public class FrameWorkFilter implements Filter {
@@ -41,7 +39,7 @@ public class FrameWorkFilter implements Filter {
     };
 
     //filter忽略列表
-    private List<String> noDecodeList = new ArrayList<String>();
+    private List<String> noDecodeList = new ArrayList<>();
 
     private PathMatcher matcher = new AntPathMatcher();
 
