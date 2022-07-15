@@ -15,7 +15,7 @@
         <slf4j.version>1.7.7</slf4j.version>
         <springframework_version>4.3.3.RELEASE</springframework_version>
         <validator.version>5.1.1.Final</validator.version>
-        <fasterxml.jackson.version>2.8.3</fasterxml.jackson.version><spring-data-redis.version>1.7.4.RELEASE</spring-data-redis.version>
+        <fasterxml.jackson.version>2.12.6.1</fasterxml.jackson.version><spring-data-redis.version>1.7.4.RELEASE</spring-data-redis.version>
         <jedis.version>2.8.1</jedis.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <commons-lang3.version>3.4</commons-lang3.version>
